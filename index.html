@@ -3,30 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Projets — Victor Lorain</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Dashboard Projets — Victor Lorain · mc2i</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0f1117;
-    --surface: #161b27;
-    --surface2: #1c2235;
-    --border: #252d42;
-    --accent: #4f8ef7;
-    --accent2: #7c5cbf;
-    --green: #2dd4a0;
-    --amber: #f5a623;
-    --red: #ef5b5b;
-    --text: #e8eaf0;
-    --muted: #6b7799;
-    --label: #3a4461;
+    --red: #E5002B;
+    --red-dark: #b8001f;
+    --red-light: #fff0f2;
+    --red-mid: #ffd6dc;
+    --black: #1A1A1A;
+    --grey-900: #2d2d2d;
+    --grey-700: #4a4a4a;
+    --grey-500: #767676;
+    --grey-300: #c8c8c8;
+    --grey-100: #f2f2f2;
+    --grey-50: #f8f8f8;
+    --white: #ffffff;
+    --border: #e8e8e8;
+    --shadow: 0 1px 4px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+    --shadow-hover: 0 4px 12px rgba(0,0,0,.1), 0 12px 32px rgba(0,0,0,.08);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    font-family: 'Figtree', sans-serif;
+    background: var(--grey-50);
+    color: var(--black);
     min-height: 100vh;
   }
 
@@ -34,91 +37,103 @@
   .sidebar {
     position: fixed;
     left: 0; top: 0; bottom: 0;
-    width: 260px;
-    background: var(--surface);
+    width: 256px;
+    background: var(--white);
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    padding: 0;
     z-index: 100;
   }
 
   .sidebar-header {
-    padding: 28px 24px 20px;
+    padding: 24px 24px 20px;
     border-bottom: 1px solid var(--border);
   }
 
-  .logo {
-    font-family: 'DM Serif Display', serif;
-    font-size: 18px;
-    color: var(--text);
+  .mc2i-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .logo-badge {
+    background: var(--red);
+    color: white;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 5px 10px;
+    border-radius: 4px;
     letter-spacing: -0.3px;
   }
 
-  .logo span { color: var(--accent); }
-
-  .sidebar-meta {
+  .logo-sub {
     font-size: 11px;
-    color: var(--muted);
-    margin-top: 4px;
-    letter-spacing: 0.5px;
+    color: var(--grey-500);
+    font-weight: 500;
     text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .sidebar-tagline {
+    font-size: 11px;
+    color: var(--grey-500);
+    margin-top: 4px;
+    font-style: italic;
   }
 
   .sidebar-section {
-    padding: 20px 16px 8px;
+    padding: 18px 20px 6px;
     font-size: 10px;
     letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 600;
+    color: var(--grey-300);
+    font-weight: 700;
   }
 
   .nav-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 16px;
+    gap: 11px;
+    padding: 9px 14px;
     margin: 1px 8px;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.15s;
     font-size: 13.5px;
-    color: var(--muted);
+    color: var(--grey-700);
     font-weight: 400;
-    border: 1px solid transparent;
   }
 
-  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item:hover { background: var(--grey-100); color: var(--black); }
 
   .nav-item.active {
-    background: rgba(79, 142, 247, 0.12);
-    color: var(--accent);
-    border-color: rgba(79, 142, 247, 0.2);
-    font-weight: 500;
+    background: var(--red-light);
+    color: var(--red);
+    font-weight: 600;
   }
 
   .nav-dot {
-    width: 8px; height: 8px;
+    width: 7px; height: 7px;
     border-radius: 50%;
     flex-shrink: 0;
   }
 
-  .dot-blue { background: var(--accent); }
-  .dot-purple { background: var(--accent2); }
-  .dot-green { background: var(--green); }
-  .dot-amber { background: var(--amber); }
+  .dot-red { background: var(--red); }
+  .dot-grey { background: var(--grey-300); }
+  .dot-dark { background: var(--black); }
 
   .nav-badge {
     margin-left: auto;
     font-size: 10px;
     padding: 1px 7px;
     border-radius: 20px;
-    font-weight: 600;
+    font-weight: 700;
+    background: var(--grey-100);
+    color: var(--grey-500);
   }
 
-  .badge-delivered { background: rgba(45,212,160,.15); color: var(--green); }
-  .badge-ongoing { background: rgba(245,166,35,.15); color: var(--amber); }
+  .nav-badge.red { background: var(--red-mid); color: var(--red); }
 
   .sidebar-bottom {
     margin-top: auto;
@@ -130,136 +145,142 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px 10px;
+    padding: 10px 12px;
     border-radius: 8px;
-    background: var(--surface2);
+    background: var(--grey-50);
+    border: 1px solid var(--border);
   }
 
   .avatar {
-    width: 32px; height: 32px;
+    width: 34px; height: 34px;
     border-radius: 8px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    background: var(--red);
     display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700; color: white;
+    font-size: 12px; font-weight: 800; color: white;
     flex-shrink: 0;
   }
 
-  .profile-info { font-size: 12px; }
-  .profile-name { color: var(--text); font-weight: 500; }
-  .profile-role { color: var(--muted); font-size: 11px; }
+  .profile-name { font-size: 12.5px; font-weight: 600; color: var(--black); }
+  .profile-role { font-size: 11px; color: var(--grey-500); }
 
   /* ── MAIN ── */
-  .main {
-    margin-left: 260px;
-    min-height: 100vh;
-  }
+  .main { margin-left: 256px; min-height: 100vh; }
 
   .topbar {
-    padding: 20px 36px;
+    padding: 0 36px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: var(--bg);
+    background: var(--white);
     position: sticky; top: 0; z-index: 50;
+    height: 64px;
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
   }
 
   .topbar-left h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
-    font-weight: 400;
-    letter-spacing: -0.5px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.3px;
   }
 
-  .topbar-left p {
+  .topbar-divider {
+    width: 1px; height: 20px;
+    background: var(--border);
+  }
+
+  .topbar-sub {
     font-size: 12px;
-    color: var(--muted);
-    margin-top: 2px;
+    color: var(--grey-500);
   }
 
-  .topbar-right {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
+  .topbar-right { display: flex; gap: 8px; align-items: center; }
 
-  .tag-pill {
+  .pill {
     font-size: 11px;
     padding: 4px 12px;
     border-radius: 20px;
-    font-weight: 500;
-    letter-spacing: 0.2px;
+    font-weight: 600;
   }
 
-  .pill-blue { background: rgba(79,142,247,.12); color: var(--accent); border: 1px solid rgba(79,142,247,.2); }
-  .pill-green { background: rgba(45,212,160,.12); color: var(--green); border: 1px solid rgba(45,212,160,.2); }
+  .pill-red { background: var(--red-light); color: var(--red); border: 1px solid var(--red-mid); }
+  .pill-grey { background: var(--grey-100); color: var(--grey-700); border: 1px solid var(--border); }
 
-  .content {
-    padding: 32px 36px;
-  }
+  .content { padding: 28px 36px; }
 
-  /* ── KPIS ── */
+  /* ── KPIs ── */
   .kpi-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 32px;
+    gap: 14px;
+    margin-bottom: 28px;
   }
 
   .kpi-card {
-    background: var(--surface);
+    background: var(--white);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 20px 22px;
+    box-shadow: var(--shadow);
     position: relative;
     overflow: hidden;
   }
 
-  .kpi-card::before {
+  .kpi-card::after {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--red);
+    transform: scaleX(0);
+    transition: transform 0.3s;
   }
 
-  .kpi-blue::before { background: var(--accent); }
-  .kpi-green::before { background: var(--green); }
-  .kpi-purple::before { background: var(--accent2); }
-  .kpi-amber::before { background: var(--amber); }
+  .kpi-card:hover::after { transform: scaleX(1); }
 
   .kpi-label {
-    font-size: 11px;
-    color: var(--muted);
+    font-size: 10.5px;
+    color: var(--grey-500);
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 10px;
   }
 
   .kpi-value {
-    font-family: 'DM Serif Display', serif;
-    font-size: 36px;
-    color: var(--text);
+    font-size: 38px;
+    font-weight: 800;
+    color: var(--black);
     line-height: 1;
+    letter-spacing: -1px;
   }
+
+  .kpi-value span { color: var(--red); }
 
   .kpi-sub {
     font-size: 11px;
-    color: var(--muted);
+    color: var(--grey-500);
     margin-top: 6px;
+    font-weight: 400;
   }
 
-  /* ── PROJECTS GRID ── */
+  /* ── SECTION TITLE ── */
   .section-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--grey-500);
     text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 16px;
+    letter-spacing: 1.2px;
+    margin-bottom: 14px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
 
   .section-title::after {
@@ -269,165 +290,183 @@
     background: var(--border);
   }
 
+  /* ── PROJECT CARDS ── */
   .projects-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    margin-bottom: 32px;
+    gap: 16px;
+    margin-bottom: 28px;
   }
 
   .project-card {
-    background: var(--surface);
+    background: var(--white);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 24px;
+    border-radius: 10px;
+    padding: 22px;
     cursor: pointer;
     transition: all 0.2s;
+    box-shadow: var(--shadow);
     position: relative;
     overflow: hidden;
   }
 
-  .project-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-1px);
-    box-shadow: 0 8px 32px rgba(79,142,247,.08);
+  .project-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--border);
+    transition: background 0.2s;
   }
 
-  .project-card.active-card {
-    border-color: var(--accent);
-    background: var(--surface2);
+  .project-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-1px);
+    border-color: var(--red-mid);
   }
+
+  .project-card:hover::before { background: var(--red); }
+  .project-card.active-card { border-color: var(--red); }
+  .project-card.active-card::before { background: var(--red); }
 
   .project-num {
-    font-family: 'DM Serif Display', serif;
-    font-size: 48px;
-    color: var(--label);
-    position: absolute;
-    top: 14px;
-    right: 22px;
-    line-height: 1;
-    user-select: none;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--red);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
   }
-
-  .project-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    margin-bottom: 16px;
-  }
-
-  .project-icon {
-    width: 40px; height: 40px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-
-  .icon-blue { background: rgba(79,142,247,.15); }
-  .icon-purple { background: rgba(124,92,191,.15); }
-  .icon-green { background: rgba(45,212,160,.15); }
-  .icon-amber { background: rgba(245,166,35,.15); }
-  .icon-red { background: rgba(239,91,91,.15); }
 
   .project-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 16px;
-    line-height: 1.3;
-    margin-bottom: 3px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.35;
+    margin-bottom: 4px;
+    letter-spacing: -0.2px;
   }
 
   .project-company {
     font-size: 11.5px;
-    color: var(--muted);
+    color: var(--grey-500);
     font-weight: 500;
+    margin-bottom: 14px;
   }
 
   .tags-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 14px;
+    gap: 5px;
+    margin-bottom: 16px;
   }
 
   .tag {
     font-size: 10.5px;
     padding: 3px 9px;
-    border-radius: 6px;
-    font-weight: 500;
-    background: var(--label);
-    color: var(--muted);
+    border-radius: 4px;
+    font-weight: 600;
+    background: var(--grey-100);
+    color: var(--grey-700);
   }
 
-  .tag-accent { background: rgba(79,142,247,.1); color: var(--accent); }
+  .tag-red { background: var(--red-light); color: var(--red); }
 
   .divider { height: 1px; background: var(--border); margin: 14px 0; }
 
+  /* phases */
+  .phases-label {
+    font-size: 10px;
+    color: var(--grey-300);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
   .phases-row {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     align-items: center;
   }
 
   .phase-step {
     flex: 1;
     text-align: center;
-    font-size: 9.5px;
-    padding: 5px 4px;
-    border-radius: 6px;
-    font-weight: 500;
-    color: var(--muted);
-    background: var(--label);
-    position: relative;
+    font-size: 9px;
+    padding: 5px 3px;
+    border-radius: 4px;
+    font-weight: 600;
+    color: var(--grey-300);
+    background: var(--grey-100);
+    letter-spacing: 0.2px;
   }
 
   .phase-step.done {
-    background: rgba(45,212,160,.12);
-    color: var(--green);
+    background: #fff0f2;
+    color: var(--red);
   }
 
-  .phase-step.current {
-    background: rgba(79,142,247,.15);
-    color: var(--accent);
-    outline: 1px solid rgba(79,142,247,.3);
-  }
+  .phase-arrow { color: var(--grey-300); font-size: 9px; flex-shrink: 0; }
 
-  .phase-arrow {
-    color: var(--label);
-    font-size: 10px;
-    flex-shrink: 0;
-  }
-
-  .results-block {
-    margin-top: 14px;
-  }
+  .results-block { margin-top: 14px; }
 
   .result-item {
     display: flex;
     align-items: flex-start;
     gap: 8px;
     font-size: 12px;
-    color: #a0b0cc;
-    padding: 4px 0;
-    line-height: 1.4;
+    color: var(--grey-700);
+    padding: 3px 0;
+    line-height: 1.45;
   }
 
   .result-dot {
     width: 5px; height: 5px;
     border-radius: 50%;
-    background: var(--green);
+    background: var(--red);
     margin-top: 5px;
     flex-shrink: 0;
   }
 
+  /* ── BARS ── */
+  .bar-wrap { margin-bottom: 10px; }
+
+  .bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--grey-700);
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+
+  .bar-label span:last-child { color: var(--red); font-weight: 700; }
+
+  .bar {
+    height: 5px;
+    background: var(--grey-100);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--red);
+    transition: width 1s ease;
+  }
+
   /* ── DETAIL PANEL ── */
   .detail-panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 28px;
+    background: var(--white);
+    border: 1px solid var(--red-mid);
+    border-left: 3px solid var(--red);
+    border-radius: 10px;
+    padding: 26px;
     display: none;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow);
     animation: fadeIn 0.2s ease;
   }
 
@@ -440,187 +479,175 @@
 
   .detail-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    margin-bottom: 24px;
+    margin-bottom: 22px;
+  }
+
+  .detail-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--red);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
   }
 
   .detail-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--black);
+    letter-spacing: -0.4px;
+  }
+
+  .detail-company {
+    font-size: 12px;
+    color: var(--grey-500);
+    margin-top: 3px;
   }
 
   .close-btn {
-    background: var(--label);
-    border: none;
-    color: var(--muted);
+    background: var(--grey-100);
+    border: 1px solid var(--border);
+    color: var(--grey-500);
     width: 30px; height: 30px;
-    border-radius: 7px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.15s;
+    flex-shrink: 0;
+    margin-left: 16px;
   }
 
-  .close-btn:hover { background: var(--border); color: var(--text); }
+  .close-btn:hover { background: var(--red); color: white; border-color: var(--red); }
 
   .detail-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 20px;
+    gap: 24px;
   }
 
   .detail-block h3 {
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: var(--muted);
-    font-weight: 600;
-    margin-bottom: 10px;
+    color: var(--grey-500);
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
   }
 
-  .detail-block ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-  }
+  .detail-block ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
 
   .detail-block li {
     font-size: 12.5px;
-    color: #aab8d4;
+    color: var(--grey-700);
     padding-left: 14px;
     position: relative;
     line-height: 1.45;
   }
 
   .detail-block li::before {
-    content: '→';
+    content: '›';
     position: absolute;
     left: 0;
-    color: var(--accent);
-    font-size: 11px;
+    color: var(--red);
+    font-weight: 700;
   }
 
-  .skills-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
+  .skills-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
 
   .skill-tag {
     font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    background: rgba(79,142,247,.1);
-    color: var(--accent);
-    font-weight: 500;
+    padding: 4px 11px;
+    border-radius: 4px;
+    background: var(--red-light);
+    color: var(--red);
+    font-weight: 600;
+    border: 1px solid var(--red-mid);
   }
 
-  /* ── PROFIL AMOA ── */
+  /* ── PROFILE SECTION ── */
   .amoa-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 16px;
     margin-bottom: 20px;
   }
 
   .amoa-card {
-    background: var(--surface);
+    background: var(--white);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 22px;
+    box-shadow: var(--shadow);
   }
 
   .amoa-card h3 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 17px;
-    margin-bottom: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
   }
 
   .trait-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
 
   .trait-icon {
-    font-size: 16px;
-    width: 32px;
-    text-align: center;
+    width: 32px; height: 32px;
+    background: var(--red-light);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
     flex-shrink: 0;
   }
 
-  .trait-content { flex: 1; }
-
-  .trait-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 3px;
-  }
-
-  .trait-desc {
-    font-size: 11px;
-    color: var(--muted);
-    line-height: 1.4;
-  }
-
-  .bar-wrap { flex: 1; }
-
-  .bar-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 5px;
-  }
-
-  .bar {
-    height: 5px;
-    background: var(--label);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-
-  .bar-fill {
-    height: 100%;
-    border-radius: 3px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    transition: width 1s ease;
-  }
+  .trait-label { font-size: 12.5px; font-weight: 700; color: var(--black); margin-bottom: 2px; }
+  .trait-desc { font-size: 11.5px; color: var(--grey-500); line-height: 1.4; }
 
   /* ── FOOTER ── */
   .footer {
-    padding: 20px 36px;
+    padding: 18px 36px;
     border-top: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-size: 11px;
-    color: var(--muted);
+    color: var(--grey-500);
+    background: var(--white);
     margin-top: 10px;
+  }
+
+  .status-live {
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .status-dot {
     display: inline-block;
     width: 7px; height: 7px;
     border-radius: 50%;
-    background: var(--green);
-    margin-right: 6px;
+    background: #22c55e;
     animation: pulse 2s infinite;
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,.4); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(34,197,94,0); }
   }
 
-  /* ── SCROLL ── */
-  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb { background: var(--grey-300); border-radius: 3px; }
 </style>
 </head>
 <body>
@@ -628,49 +655,60 @@
 <!-- SIDEBAR -->
 <div class="sidebar">
   <div class="sidebar-header">
-    <div class="logo">AMOA <span>Projets</span></div>
-    <div class="sidebar-meta">Portfolio 2022–2026</div>
+    <div class="mc2i-logo">
+      <span class="logo-badge">mc2i</span>
+      <span class="logo-sub">Portfolio Consultant</span>
+    </div>
+    <div class="sidebar-tagline">Human First. Digital Explorers.</div>
   </div>
 
   <div class="sidebar-section">Navigation</div>
-
-  <div class="nav-item active" onclick="showView('overview')">
-    <span class="nav-dot dot-blue"></span>
+  <div class="nav-item active" onclick="resetFilter(this)">
+    <span class="nav-dot dot-red"></span>
     Vue d'ensemble
   </div>
-  <div class="nav-item" onclick="showView('projects')">
-    <span class="nav-dot dot-purple"></span>
-    Projets
-    <span class="nav-badge badge-delivered">5</span>
-  </div>
-  <div class="nav-item" onclick="showView('profile')">
-    <span class="nav-dot dot-green"></span>
-    Profil AMOA
+  <div class="nav-item" onclick="scrollToProfile(this)">
+    <span class="nav-dot dot-dark"></span>
+    Profil MOA
   </div>
 
-  <div class="sidebar-section" style="margin-top:8px">Expériences</div>
-  <div class="nav-item" onclick="filterCompany('CheckMyGuest')">
-    <span class="nav-dot" style="background:#ef5b5b"></span>
+  <div class="sidebar-section" style="margin-top:6px">Par expérience</div>
+  <div class="nav-item" onclick="filterCompany('CheckMyGuest', this)">
+    <span class="nav-dot" style="background:#e8a000"></span>
     CheckMyGuest
-    <span class="nav-badge badge-delivered">1</span>
+    <span class="nav-badge red">1</span>
   </div>
-  <div class="nav-item" onclick="filterCompany('QAPA')">
-    <span class="nav-dot dot-amber"></span>
+  <div class="nav-item" onclick="filterCompany('QAPA', this)">
+    <span class="nav-dot" style="background:#0062cc"></span>
     QAPA / Adecco
-    <span class="nav-badge badge-delivered">1</span>
+    <span class="nav-badge red">1</span>
   </div>
-  <div class="nav-item" onclick="filterCompany('ERES')">
-    <span class="nav-dot dot-green"></span>
+  <div class="nav-item" onclick="filterCompany('ERES', this)">
+    <span class="nav-dot" style="background:#00875a"></span>
     ERES
-    <span class="nav-badge badge-delivered">3</span>
+    <span class="nav-badge red">3</span>
+  </div>
+
+  <div class="sidebar-section" style="margin-top:6px">Domaines</div>
+  <div class="nav-item" onclick="filterTag('IA', this)">
+    <span class="nav-dot dot-grey"></span>
+    IA & Automatisation
+  </div>
+  <div class="nav-item" onclick="filterTag('Data', this)">
+    <span class="nav-dot dot-grey"></span>
+    Data & CRM
+  </div>
+  <div class="nav-item" onclick="filterTag('Process', this)">
+    <span class="nav-dot dot-grey"></span>
+    Process & UX
   </div>
 
   <div class="sidebar-bottom">
     <div class="profile-chip">
       <div class="avatar">VL</div>
-      <div class="profile-info">
+      <div>
         <div class="profile-name">Victor Lorain</div>
-        <div class="profile-role">Digital Transformation</div>
+        <div class="profile-role">Digital Transformation · 2026</div>
       </div>
     </div>
   </div>
@@ -681,11 +719,12 @@
   <div class="topbar">
     <div class="topbar-left">
       <h1>Dashboard Projets</h1>
-      <p>Présentation MOA — Recueil du besoin · Spécifications · Delivery</p>
+      <div class="topbar-divider"></div>
+      <span class="topbar-sub">Présentation MOA · Recueil besoin · Spécifications · Delivery</span>
     </div>
     <div class="topbar-right">
-      <span class="tag-pill pill-green">✓ 5 livrés</span>
-      <span class="tag-pill pill-blue">NEOMA TEMA · 2026</span>
+      <span class="pill pill-red">✓ 5 projets livrés</span>
+      <span class="pill pill-grey">NEOMA TEMA · 2026</span>
     </div>
   </div>
 
@@ -693,51 +732,46 @@
 
     <!-- KPIs -->
     <div class="kpi-row">
-      <div class="kpi-card kpi-blue">
+      <div class="kpi-card">
         <div class="kpi-label">Projets livrés</div>
-        <div class="kpi-value">5</div>
-        <div class="kpi-sub">100% taux de livraison</div>
+        <div class="kpi-value"><span>5</span></div>
+        <div class="kpi-sub">Taux de livraison 100%</div>
       </div>
-      <div class="kpi-card kpi-green">
+      <div class="kpi-card">
         <div class="kpi-label">Expériences</div>
-        <div class="kpi-value">3</div>
+        <div class="kpi-value"><span>3</span></div>
         <div class="kpi-sub">CheckMyGuest · QAPA · ERES</div>
       </div>
-      <div class="kpi-card kpi-purple">
-        <div class="kpi-label">Domaines</div>
-        <div class="kpi-value">4</div>
+      <div class="kpi-card">
+        <div class="kpi-label">Domaines couverts</div>
+        <div class="kpi-value"><span>4</span></div>
         <div class="kpi-sub">IA · Data · Process · CRM</div>
       </div>
-      <div class="kpi-card kpi-amber">
+      <div class="kpi-card">
         <div class="kpi-label">Années terrain</div>
-        <div class="kpi-value">3</div>
+        <div class="kpi-value"><span>3</span></div>
         <div class="kpi-sub">2022 → 2026</div>
       </div>
     </div>
 
     <!-- PROJECTS -->
-    <div class="section-title" id="projects-title">Projets clés</div>
+    <div class="section-title">Projets clés</div>
 
     <div class="projects-grid" id="projects-grid">
 
       <!-- P1 -->
-      <div class="project-card" onclick="openDetail(0)">
-        <span class="project-num">01</span>
-        <div class="project-header">
-          <div class="project-icon icon-red">🎯</div>
-          <div>
-            <div class="project-title">Système de Codage<br>Couleur par Urgence</div>
-            <div class="project-company">CheckMyGuest · 2022</div>
-          </div>
-        </div>
+      <div class="project-card" data-company="CheckMyGuest" data-tags="Process UX" onclick="openDetail(0)">
+        <div class="project-num">Projet 01</div>
+        <div class="project-title">Système de Codage Couleur par Urgence</div>
+        <div class="project-company">CheckMyGuest · 2022</div>
         <div class="tags-row">
-          <span class="tag tag-accent">Process</span>
+          <span class="tag tag-red">Process</span>
           <span class="tag">UX</span>
           <span class="tag">Excel</span>
           <span class="tag">Priorisation</span>
         </div>
         <div class="divider"></div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Phases projet</div>
+        <div class="phases-label">Phases projet</div>
         <div class="phases-row">
           <div class="phase-step done">Recueil besoin</div>
           <span class="phase-arrow">›</span>
@@ -748,34 +782,30 @@
           <div class="phase-step done">Livraison</div>
         </div>
         <div class="results-block">
-          <div class="result-item"><span class="result-dot"></span>Zéro ticket oublié — escalade automatique</div>
-          <div class="result-item"><span class="result-dot"></span>Réduction délais de traitement</div>
+          <div class="result-item"><span class="result-dot"></span>Zéro ticket oublié — escalade automatique garantie</div>
+          <div class="result-item"><span class="result-dot"></span>Satisfaction client améliorée, processus documenté</div>
         </div>
       </div>
 
       <!-- P2 -->
-      <div class="project-card" onclick="openDetail(1)">
-        <span class="project-num">02</span>
-        <div class="project-header">
-          <div class="project-icon icon-amber">🤖</div>
-          <div>
-            <div class="project-title">Outil IA de Sélection<br>Automatique de Candidats</div>
-            <div class="project-company">QAPA / Adecco · 2023</div>
-          </div>
-        </div>
+      <div class="project-card" data-company="QAPA" data-tags="IA RH" onclick="openDetail(1)">
+        <div class="project-num">Projet 02</div>
+        <div class="project-title">Outil IA de Sélection Automatique de Candidats</div>
+        <div class="project-company">QAPA / Adecco · 2023</div>
         <div class="tags-row">
-          <span class="tag tag-accent">IA</span>
+          <span class="tag tag-red">IA</span>
           <span class="tag">RH Tech</span>
-          <span class="tag">Analyse données</span>
+          <span class="tag">Data</span>
+          <span class="tag">Tests utilisateurs</span>
         </div>
         <div class="divider"></div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Phases projet</div>
+        <div class="phases-label">Phases projet</div>
         <div class="phases-row">
           <div class="phase-step done">Cadrage</div>
           <span class="phase-arrow">›</span>
           <div class="phase-step done">Spécs fonct.</div>
           <span class="phase-arrow">›</span>
-          <div class="phase-step done">Tests</div>
+          <div class="phase-step done">Recette</div>
           <span class="phase-arrow">›</span>
           <div class="phase-step done">Formation</div>
         </div>
@@ -786,55 +816,45 @@
       </div>
 
       <!-- P3 -->
-      <div class="project-card" onclick="openDetail(2)">
-        <span class="project-num">03</span>
-        <div class="project-header">
-          <div class="project-icon icon-blue">⚡</div>
-          <div>
-            <div class="project-title">Intégration Dust<br>— IA Générative Interne</div>
-            <div class="project-company">ERES · 2024</div>
-          </div>
-        </div>
+      <div class="project-card" data-company="ERES" data-tags="IA Automatisation" onclick="openDetail(2)">
+        <div class="project-num">Projet 03</div>
+        <div class="project-title">Intégration de Dust — IA Générative Interne</div>
+        <div class="project-company">ERES · 2024</div>
         <div class="tags-row">
-          <span class="tag tag-accent">IA Générative</span>
+          <span class="tag tag-red">IA Générative</span>
           <span class="tag">Prompt Eng.</span>
           <span class="tag">Change Mgmt</span>
         </div>
         <div class="divider"></div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Phases projet</div>
+        <div class="phases-label">Phases projet</div>
         <div class="phases-row">
           <div class="phase-step done">Cas d'usage</div>
           <span class="phase-arrow">›</span>
           <div class="phase-step done">Config.</div>
           <span class="phase-arrow">›</span>
-          <div class="phase-step done">Prompts</div>
+          <div class="phase-step done">Déploiement</div>
           <span class="phase-arrow">›</span>
           <div class="phase-step done">Adoption</div>
         </div>
         <div class="results-block">
-          <div class="result-item"><span class="result-dot"></span>Gain de temps sur la rédaction interne</div>
-          <div class="result-item"><span class="result-dot"></span>Équipes autonomes post-déploiement</div>
+          <div class="result-item"><span class="result-dot"></span>Gain de temps notable sur les tâches de rédaction</div>
+          <div class="result-item"><span class="result-dot"></span>Équipes autonomes sur l'outil post-déploiement</div>
         </div>
       </div>
 
       <!-- P4 -->
-      <div class="project-card" onclick="openDetail(3)">
-        <span class="project-num">04</span>
-        <div class="project-header">
-          <div class="project-icon icon-green">⚙️</div>
-          <div>
-            <div class="project-title">Automatisation des<br>Workflows Internes</div>
-            <div class="project-company">ERES · 2024–2025</div>
-          </div>
-        </div>
+      <div class="project-card" data-company="ERES" data-tags="Automatisation Process Data" onclick="openDetail(3)">
+        <div class="project-num">Projet 04</div>
+        <div class="project-title">Automatisation des Workflows Internes</div>
+        <div class="project-company">ERES · 2024–2025</div>
         <div class="tags-row">
-          <span class="tag tag-accent">Automatisation</span>
+          <span class="tag tag-red">Automatisation</span>
           <span class="tag">HubSpot</span>
           <span class="tag">Zoho CRM</span>
           <span class="tag">Agile</span>
         </div>
         <div class="divider"></div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Phases projet</div>
+        <div class="phases-label">Phases projet</div>
         <div class="phases-row">
           <div class="phase-step done">Carto. process</div>
           <span class="phase-arrow">›</span>
@@ -845,38 +865,37 @@
           <div class="phase-step done">Optimisation</div>
         </div>
         <div class="results-block">
-          <div class="result-item"><span class="result-dot"></span>Moins d'erreurs dans les flux de données</div>
+          <div class="result-item"><span class="result-dot"></span>Réduction du temps manuel, moins d'erreurs humaines</div>
           <div class="result-item"><span class="result-dot"></span>Process scalables et documentés</div>
         </div>
       </div>
 
       <!-- P5 full width -->
-      <div class="project-card" onclick="openDetail(4)" style="grid-column: 1/-1;">
-        <span class="project-num">05</span>
-        <div style="display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:start;">
-          <div class="project-icon icon-purple" style="margin-top:3px">🗄️</div>
+      <div class="project-card" data-company="ERES" data-tags="Data CRM" onclick="openDetail(4)" style="grid-column:1/-1">
+        <div style="display:grid;grid-template-columns:1fr auto;gap:28px;align-items:start">
           <div>
+            <div class="project-num">Projet 05</div>
             <div class="project-title">Structuration & Gestion de Base de Données Partenaires</div>
-            <div class="project-company" style="margin-top:3px">ERES · 2025</div>
+            <div class="project-company">ERES · 2025</div>
             <div class="tags-row" style="margin-top:10px">
-              <span class="tag tag-accent">Data Management</span>
+              <span class="tag tag-red">Data Management</span>
               <span class="tag">CRM</span>
               <span class="tag">SQL</span>
               <span class="tag">Analyse données</span>
               <span class="tag">Reporting</span>
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:8px;min-width:320px">
+          <div style="min-width:300px;padding-top:4px">
             <div class="bar-wrap">
-              <div class="bar-label"><span>Qualité données</span><span style="color:var(--green)">+85%</span></div>
+              <div class="bar-label"><span>Qualité des données</span><span>+85%</span></div>
               <div class="bar"><div class="bar-fill" style="width:85%"></div></div>
             </div>
             <div class="bar-wrap">
-              <div class="bar-label"><span>Erreurs éliminées</span><span style="color:var(--green)">-70%</span></div>
-              <div class="bar"><div class="bar-fill" style="width:70%;background:linear-gradient(90deg,var(--green),#1ab87e)"></div></div>
+              <div class="bar-label"><span>Erreurs éliminées</span><span>-70%</span></div>
+              <div class="bar"><div class="bar-fill" style="width:70%"></div></div>
             </div>
             <div class="bar-wrap">
-              <div class="bar-label"><span>Adoption CRM</span><span style="color:var(--accent)">100%</span></div>
+              <div class="bar-label"><span>Adoption CRM équipes</span><span>100%</span></div>
               <div class="bar"><div class="bar-fill" style="width:100%"></div></div>
             </div>
           </div>
@@ -889,8 +908,9 @@
     <div class="detail-panel" id="detail-panel">
       <div class="detail-header">
         <div>
+          <div class="detail-eyebrow">Détail du projet</div>
           <div class="detail-title" id="d-title"></div>
-          <div style="font-size:12px;color:var(--muted);margin-top:4px" id="d-company"></div>
+          <div class="detail-company" id="d-company"></div>
         </div>
         <button class="close-btn" onclick="closeDetail()">✕</button>
       </div>
@@ -910,12 +930,12 @@
       </div>
       <div class="divider" style="margin:20px 0 16px"></div>
       <div>
-        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:600">Compétences développées</div>
+        <div style="font-size:10px;color:var(--grey-500);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:700">Compétences développées</div>
         <div class="skills-wrap" id="d-skills"></div>
       </div>
     </div>
 
-    <!-- PROFIL AMOA -->
+    <!-- PROFIL MOA -->
     <div id="profile-section">
       <div class="section-title">Profil MOA</div>
       <div class="amoa-row">
@@ -923,56 +943,42 @@
           <h3>Ce qui me définit</h3>
           <div class="trait-row">
             <div class="trait-icon">🎯</div>
-            <div class="trait-content">
-              <div class="trait-label">Initiative</div>
-              <div class="trait-desc">Je ne me limite pas à ma fiche de poste — je propose et j'agis.</div>
-            </div>
+            <div><div class="trait-label">Initiative</div><div class="trait-desc">Je ne me limite pas à ma fiche de poste — je propose et j'agis.</div></div>
           </div>
           <div class="trait-row">
             <div class="trait-icon">🔄</div>
-            <div class="trait-content">
-              <div class="trait-label">Adaptabilité</div>
-              <div class="trait-desc">3 entreprises, 2 pays, des environnements très différents.</div>
-            </div>
+            <div><div class="trait-label">Adaptabilité</div><div class="trait-desc">3 entreprises, 2 pays, des environnements très différents.</div></div>
           </div>
           <div class="trait-row">
             <div class="trait-icon">🤖</div>
-            <div class="trait-content">
-              <div class="trait-label">Expertise IA & Data</div>
-              <div class="trait-desc">Des outils concrets déployés en conditions réelles.</div>
-            </div>
+            <div><div class="trait-label">Expertise IA & Data</div><div class="trait-desc">Des outils concrets déployés en conditions réelles.</div></div>
           </div>
           <div class="trait-row">
             <div class="trait-icon">🚀</div>
-            <div class="trait-content">
-              <div class="trait-label">Livraison</div>
-              <div class="trait-desc">Je commence et je termine — chaque projet mené à son terme.</div>
-            </div>
+            <div><div class="trait-label">Livraison</div><div class="trait-desc">Je commence et je termine — chaque projet mené à son terme.</div></div>
           </div>
         </div>
         <div class="amoa-card">
           <h3>Compétences MOA clés</h3>
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <div class="bar-wrap">
-              <div class="bar-label"><span>Recueil du besoin</span><span style="color:var(--accent)">Expert</span></div>
-              <div class="bar"><div class="bar-fill" style="width:90%"></div></div>
-            </div>
-            <div class="bar-wrap">
-              <div class="bar-label"><span>Rédaction spécifications</span><span style="color:var(--accent)">Avancé</span></div>
-              <div class="bar"><div class="bar-fill" style="width:78%"></div></div>
-            </div>
-            <div class="bar-wrap">
-              <div class="bar-label"><span>Gestion de projet Agile</span><span style="color:var(--accent)">Avancé</span></div>
-              <div class="bar"><div class="bar-fill" style="width:80%"></div></div>
-            </div>
-            <div class="bar-wrap">
-              <div class="bar-label"><span>Data analyse & CRM</span><span style="color:var(--green)">Confirmé</span></div>
-              <div class="bar"><div class="bar-fill" style="width:75%;background:linear-gradient(90deg,var(--green),#1ab87e)"></div></div>
-            </div>
-            <div class="bar-wrap">
-              <div class="bar-label"><span>Gestion du changement</span><span style="color:var(--green)">Confirmé</span></div>
-              <div class="bar"><div class="bar-fill" style="width:72%;background:linear-gradient(90deg,var(--green),#1ab87e)"></div></div>
-            </div>
+          <div class="bar-wrap" style="margin-bottom:14px">
+            <div class="bar-label"><span>Recueil du besoin</span><span>Expert</span></div>
+            <div class="bar"><div class="bar-fill" style="width:90%"></div></div>
+          </div>
+          <div class="bar-wrap" style="margin-bottom:14px">
+            <div class="bar-label"><span>Rédaction spécifications fonctionnelles</span><span>Avancé</span></div>
+            <div class="bar"><div class="bar-fill" style="width:78%"></div></div>
+          </div>
+          <div class="bar-wrap" style="margin-bottom:14px">
+            <div class="bar-label"><span>Gestion de projet Agile</span><span>Avancé</span></div>
+            <div class="bar"><div class="bar-fill" style="width:80%"></div></div>
+          </div>
+          <div class="bar-wrap" style="margin-bottom:14px">
+            <div class="bar-label"><span>Data analyse & CRM</span><span>Confirmé</span></div>
+            <div class="bar"><div class="bar-fill" style="width:75%"></div></div>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar-label"><span>Conduite du changement</span><span>Confirmé</span></div>
+            <div class="bar"><div class="bar-fill" style="width:72%"></div></div>
           </div>
         </div>
       </div>
@@ -981,8 +987,8 @@
   </div>
 
   <div class="footer">
-    <div><span class="status-dot"></span>Dashboard actif — Victor Lorain · victor.lorain.21@neoma-bs.com</div>
-    <div>NEOMA Business School · TEMA · 2026</div>
+    <div class="status-live"><span class="status-dot"></span>Victor Lorain · victor.lorain.21@neoma-bs.com</div>
+    <div>NEOMA Business School · TEMA Digital, Data & Innovation · 2026</div>
   </div>
 </div>
 
@@ -991,112 +997,42 @@ const projects = [
   {
     title: "Système de Codage Couleur par Urgence",
     company: "CheckMyGuest · 2022",
-    context: [
-      "Aucun système de priorisation des interventions de maintenance",
-      "Tickets non-urgents en attente 1 à 2 semaines",
-      "Frustration croissante des clients, manque de transparence"
-    ],
-    actions: [
-      "Analyse des types et fréquences des problèmes signalés (recueil besoin)",
-      "Conception d'un code couleur vert→rouge basé sur l'urgence",
-      "Mise en place d'une logique d'escalade automatique sous X jours",
-      "Déploiement et documentation du système pour l'équipe"
-    ],
-    results: [
-      "Zéro ticket oublié — escalade automatique garantie",
-      "Réduction des délais moyens de traitement",
-      "Satisfaction client améliorée grâce à la transparence",
-      "Processus reproductible et documenté"
-    ],
-    skills: ["Gestion de projet", "UX Process", "Priorisation", "Autonomie", "Excel", "Recueil besoin"]
+    context: ["Aucun système de priorisation des interventions de maintenance","Tickets non-urgents en attente 1 à 2 semaines","Frustration croissante des clients, manque de transparence"],
+    actions: ["Recueil de besoin : analyse des types et fréquences des problèmes","Conception d'un code couleur vert→rouge basé sur le niveau d'urgence","Mise en place d'une logique d'escalade automatique sous X jours","Déploiement et rédaction de la documentation pour l'équipe"],
+    results: ["Zéro ticket oublié — escalade automatique garantie","Réduction des délais moyens de traitement","Satisfaction client améliorée grâce à la transparence","Processus reproductible et documenté"],
+    skills: ["Gestion de projet","UX Process","Priorisation","Recueil besoin","Excel","Documentation"]
   },
   {
     title: "Outil IA de Sélection Automatique de Candidats",
     company: "QAPA / Adecco · 2023",
-    context: [
-      "Processus de matching candidats/offres manuel et chronophage",
-      "Volume élevé de profils → tri des candidatures très long",
-      "Besoin de fiabilité et d'adéquation profil/poste"
-    ],
-    actions: [
-      "Collaboration avec l'équipe tech pour définir les critères de matching",
-      "Contribution à la conception de l'algorithme de sélection IA",
-      "Tests utilisateurs et itérations sur la pertinence des résultats",
-      "Formation des recruteurs à l'utilisation de l'outil"
-    ],
-    results: [
-      "Temps de sélection réduit de manière significative",
-      "Meilleure adéquation profil / poste pour les clients",
-      "Outil adopté par l'ensemble de l'équipe recrutement",
-      "Compréhension approfondie des outils RH digitaux"
-    ],
-    skills: ["IA & Machine Learning", "Collaboration Tech", "Analyse de données", "Recrutement digital", "Tests utilisateurs"]
+    context: ["Processus de matching candidats/offres 100% manuel et chronophage","Volume élevé de profils difficile à traiter pour les recruteurs","Besoin de fiabilité et d'adéquation profil/poste"],
+    actions: ["Cadrage : définition des critères de matching avec l'équipe tech","Rédaction des spécifications fonctionnelles de l'algorithme IA","Tests utilisateurs et itérations sur la pertinence des résultats","Formation des recruteurs à l'utilisation du nouvel outil"],
+    results: ["Temps de sélection réduit de manière significative","Meilleure adéquation profil / poste pour les clients","Outil adopté par l'ensemble de l'équipe recrutement","Compréhension approfondie des outils RH digitaux"],
+    skills: ["IA & Machine Learning","Specs fonctionnelles","Tests utilisateurs","Collaboration Tech","Analyse de données","Formation"]
   },
   {
     title: "Intégration de Dust — IA Générative Interne",
     company: "ERES · 2024",
-    context: [
-      "ERES souhaitait accélérer les tâches répétitives via un assistant IA",
-      "Rédaction, synthèse et réponses courtiers chronophages",
-      "Capitalisation sur la connaissance interne inexistante"
-    ],
-    actions: [
-      "Identification des cas d'usage prioritaires avec les équipes métier",
-      "Configuration et personnalisation de l'espace Dust",
-      "Création de prompts et d'agents adaptés aux besoins ERES",
-      "Formation des collaborateurs et accompagnement à l'adoption"
-    ],
-    results: [
-      "Gain de temps notable sur les tâches de rédaction",
-      "Capitalisation sur la documentation interne existante",
-      "Équipes autonomes sur l'outil post-déploiement",
-      "Base solide pour de futurs projets d'automatisation IA"
-    ],
-    skills: ["IA Générative", "Gestion du changement", "Prompt Engineering", "Formation", "Dust / LLM"]
+    context: ["ERES souhaitait accélérer les tâches répétitives via un assistant IA","Rédaction, synthèse et réponses courtiers trop chronophages","Absence de capitalisation sur la connaissance interne"],
+    actions: ["Identification des cas d'usage prioritaires avec les équipes métier","Configuration et personnalisation de l'espace Dust","Création de prompts et d'agents adaptés aux besoins ERES","Formation des collaborateurs et accompagnement à l'adoption"],
+    results: ["Gain de temps notable sur les tâches de rédaction","Capitalisation sur la documentation interne existante","Équipes autonomes sur l'outil post-déploiement","Base solide pour de futurs projets d'automatisation IA"],
+    skills: ["IA Générative","Prompt Engineering","Gestion du changement","Formation","Dust / LLM","Conduite du changement"]
   },
   {
     title: "Automatisation des Workflows Internes",
     company: "ERES · 2024–2025",
-    context: [
-      "Nombreuses tâches récurrentes réalisées manuellement",
-      "Relances courtiers, mises à jour CRM, suivi partenariats sans automatisation",
-      "Objectif : libérer du temps opérationnel"
-    ],
-    actions: [
-      "Cartographie des processus manuels chronophages",
-      "Mise en place d'automatisations (relances, notifications, MAJ)",
-      "Intégration avec HubSpot et Zoho CRM",
-      "Suivi des performances et optimisation continue"
-    ],
-    results: [
-      "Réduction du temps manuel sur les tâches répétitives",
-      "Moins d'erreurs humaines dans les flux de données",
-      "Meilleure traçabilité des actions partenaires",
-      "Processus scalables et documentés"
-    ],
-    skills: ["Automatisation", "HubSpot", "Zoho CRM", "Process Mapping", "Agile / Scrum"]
+    context: ["Nombreuses tâches récurrentes (relances, MAJ CRM) réalisées manuellement","Risque d'erreurs humaines dans les flux de données","Objectif : libérer du temps opérationnel via l'automatisation"],
+    actions: ["Cartographie des processus manuels chronophages","Rédaction du cahier des charges des automatisations","Intégration avec HubSpot et Zoho CRM","Suivi des performances et optimisation continue"],
+    results: ["Réduction du temps manuel sur les tâches répétitives","Moins d'erreurs humaines dans les flux de données","Meilleure traçabilité des actions partenaires","Process scalables et documentés"],
+    skills: ["Automatisation","Process Mapping","HubSpot","Zoho CRM","Agile / Scrum","Cahier des charges"]
   },
   {
     title: "Structuration & Gestion de Base de Données Partenaires",
     company: "ERES · 2025",
-    context: [
-      "Base de données partenaires/courtiers sans structure ni cohérence",
-      "Informations manquantes ou mal formatées",
-      "Impact négatif sur la qualité des analyses et décisions commerciales"
-    ],
-    actions: [
-      "Audit de la base existante (qualité, doublons, lacunes)",
-      "Définition d'une structure standardisée avec les équipes",
-      "Nettoyage, normalisation et enrichissement des données",
-      "Mise en place de règles de saisie pour maintenir la qualité"
-    ],
-    results: [
-      "Base de données fiable et exploitable pour les analyses",
-      "Gain de qualité sur le reporting et le suivi commercial",
-      "Réduction des erreurs liées aux données mal renseignées",
-      "Meilleure expérience pour les équipes utilisant le CRM"
-    ],
-    skills: ["Data Management", "CRM", "Analyse de données", "Rigueur", "SQL", "Excel"]
+    context: ["Base de données partenaires/courtiers sans structure ni cohérence","Informations manquantes ou mal formatées impactant les analyses","Décisions commerciales fragilisées par la mauvaise qualité data"],
+    actions: ["Audit de la base existante (qualité, doublons, lacunes)","Définition d'une structure standardisée avec les équipes métier","Nettoyage, normalisation et enrichissement des données","Mise en place de règles de saisie pour maintenir la qualité"],
+    results: ["Base de données fiable et exploitable pour les analyses","Gain de qualité sur le reporting et le suivi commercial","Réduction des erreurs liées aux données mal renseignées","Meilleure expérience pour les équipes utilisant le CRM"],
+    skills: ["Data Management","CRM","Analyse de données","SQL","Excel","Reporting"]
   }
 ];
 
@@ -1104,21 +1040,14 @@ function openDetail(idx) {
   const p = projects[idx];
   document.getElementById('d-title').textContent = p.title;
   document.getElementById('d-company').textContent = p.company;
-
   ['context','actions','results'].forEach(k => {
-    const ul = document.getElementById('d-' + k);
-    ul.innerHTML = p[k].map(item => `<li>${item}</li>`).join('');
+    document.getElementById('d-' + k).innerHTML = p[k].map(i => `<li>${i}</li>`).join('');
   });
-
-  document.getElementById('d-skills').innerHTML =
-    p.skills.map(s => `<span class="skill-tag">${s}</span>`).join('');
-
-  document.getElementById('detail-panel').classList.add('visible');
-  document.getElementById('detail-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-  document.querySelectorAll('.project-card').forEach((c,i) => {
-    c.classList.toggle('active-card', i === idx);
-  });
+  document.getElementById('d-skills').innerHTML = p.skills.map(s => `<span class="skill-tag">${s}</span>`).join('');
+  const panel = document.getElementById('detail-panel');
+  panel.classList.add('visible');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  document.querySelectorAll('.project-card').forEach((c,i) => c.classList.toggle('active-card', i === idx));
 }
 
 function closeDetail() {
@@ -1126,38 +1055,42 @@ function closeDetail() {
   document.querySelectorAll('.project-card').forEach(c => c.classList.remove('active-card'));
 }
 
-function showView(v) {
-  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-  event.target.classList.add('active');
-}
-
-function filterCompany(company) {
-  const map = { 'CheckMyGuest': [0], 'QAPA': [1], 'ERES': [2,3,4] };
-  const cards = document.querySelectorAll('.project-card');
-  const indices = map[company] || [];
-  cards.forEach((c, i) => {
-    c.style.opacity = indices.includes(i) ? '1' : '0.3';
-    c.style.pointerEvents = indices.includes(i) ? 'auto' : 'none';
+function filterCompany(company, el) {
+  const map = { 'CheckMyGuest': ['CheckMyGuest'], 'QAPA': ['QAPA'], 'ERES': ['ERES'] };
+  setActive(el);
+  document.querySelectorAll('.project-card').forEach(c => {
+    const show = map[company].some(v => c.dataset.company.includes(v));
+    c.style.opacity = show ? '1' : '0.25';
+    c.style.pointerEvents = show ? 'auto' : 'none';
   });
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  event.target.classList.add('active');
 }
 
-// Reset on overview click
-const overviewBtn = document.querySelector('.nav-item');
-const origClick = overviewBtn.onclick;
-document.querySelectorAll('.nav-item').forEach(item => {
-  if (item.textContent.trim().startsWith('Vue')) {
-    item.onclick = function() {
-      document.querySelectorAll('.project-card').forEach(c => {
-        c.style.opacity = '1';
-        c.style.pointerEvents = 'auto';
-      });
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      this.classList.add('active');
-    };
-  }
-});
+function filterTag(tag, el) {
+  setActive(el);
+  document.querySelectorAll('.project-card').forEach(c => {
+    const show = c.dataset.tags && c.dataset.tags.toLowerCase().includes(tag.toLowerCase());
+    c.style.opacity = show ? '1' : '0.25';
+    c.style.pointerEvents = show ? 'auto' : 'none';
+  });
+}
+
+function resetFilter(el) {
+  setActive(el);
+  document.querySelectorAll('.project-card').forEach(c => {
+    c.style.opacity = '1';
+    c.style.pointerEvents = 'auto';
+  });
+}
+
+function scrollToProfile(el) {
+  setActive(el);
+  document.getElementById('profile-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function setActive(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
 </script>
 </body>
 </html>
