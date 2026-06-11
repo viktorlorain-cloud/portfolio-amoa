@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AS Learning · LMS — Plateforme de gestion de formation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#4f46e5; --primary-dark:#3730a3; --primary-soft:#eef2ff; --primary-mid:#c7d2fe;
+    --ink:#0f172a; --dark:#1e1b4b;
+    --accent:#f59e0b; --accent-soft:#fef3c7;
+    --green:#16a34a; --green-soft:#dcfce7;
+    --red:#dc2626; --red-soft:#fee2e2;
+    --blue:#0284c7; --blue-soft:#e0f2fe;
+    --bg:#f1f5f9; --surface:#ffffff; --surface2:#f8fafc;
+    --border:#e2e8f0; --border-dark:#cbd5e1;
+    --muted:#64748b; --muted2:#94a3b8;
+    --shadow:0 1px 3px rgba(15,23,42,.08),0 1px 2px rgba(15,23,42,.04);
+    --shadow-lg:0 10px 30px rgba(15,23,42,.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer}
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-thumb{background:var(--border-dark);border-radius:4px}
+  ::-webkit-scrollbar-track{background:transparent}
+
+  /* ── LAYOUT ── */
+  .app{display:flex;min-height:100vh}
+  .sidebar{width:248px;background:var(--dark);position:fixed;left:0;top:0;bottom:0;display:flex;flex-direction:column;z-index:100}
+  .brand{padding:20px 22px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:12px}
+  .brand-logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:17px;flex-shrink:0}
+  .brand-txt b{color:#fff;font-size:15px;font-weight:800;letter-spacing:-.3px;display:block;line-height:1.1}
+  .brand-txt span{color:rgba(255,255,255,.45);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600}
+  .nav{flex:1;overflow-y:auto;padding:14px 12px}
+  .nav-label{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.3);font-weight:700;padding:14px 12px 6px}
+  .nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:9px;color:rgba(255,255,255,.62);font-size:13.5px;font-weight:500;transition:.15s;margin-bottom:2px;cursor:pointer}
+  .nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+  .nav-item.active{background:var(--primary);color:#fff;font-weight:600;box-shadow:0 4px 12px rgba(79,70,229,.4)}
+  .nav-ico{width:18px;height:18px;flex-shrink:0;stroke-width:2}
+  .nav-badge{margin-left:auto;font-size:10px;font-weight:700;background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);padding:1px 8px;border-radius:20px}
+  .nav-item.active .nav-badge{background:rgba(255,255,255,.25);color:#fff}
+  .sb-foot{padding:14px;border-top:1px solid rgba(255,255,255,.08)}
+  .role-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 12px}
+  .role-box label{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4);font-weight:700;display:block;margin-bottom:6px}
+  .role-box select{width:100%;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:7px;padding:7px 8px;font-size:12.5px;font-weight:600;font-family:inherit}
+
+  .main{flex:1;margin-left:248px;min-width:0}
+  .topbar{height:62px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:50}
+  .topbar h1{font-size:17px;font-weight:800;letter-spacing:-.4px}
+  .topbar .crumb{font-size:11.5px;color:var(--muted);margin-top:1px}
+  .topbar-right{display:flex;align-items:center;gap:10px}
+  .who{display:flex;align-items:center;gap:9px;padding:5px 7px 5px 12px;border:1px solid var(--border);border-radius:30px}
+  .who .nm{font-size:12.5px;font-weight:700}.who .rl{font-size:10.5px;color:var(--muted)}
+  .who .av{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px}
+  .view{padding:26px 28px 60px}
+
+  /* ── COMPONENTS ── */
+  .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 15px;border-radius:9px;font-size:13px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--ink);transition:.15s}
+  .btn:hover{background:var(--surface2);border-color:var(--border-dark)}
+  .btn svg{width:15px;height:15px;stroke-width:2.2}
+  .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+  .btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark)}
+  .btn-sm{padding:6px 11px;font-size:12px;border-radius:7px}
+  .btn-ghost{border-color:transparent;background:transparent}
+  .btn-ghost:hover{background:var(--surface2)}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+  .card-h{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .card-h h3{font-size:14px;font-weight:700}
+  .card-b{padding:20px}
+
+  .section-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px}
+  .section-row h2{font-size:20px;font-weight:800;letter-spacing:-.5px}
+  .section-row p{font-size:13px;color:var(--muted);margin-top:2px}
+
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:30px;letter-spacing:.2px}
+  .pill .dot{width:6px;height:6px;border-radius:50%}
+  .pill-green{background:var(--green-soft);color:#15803d}
+  .pill-amber{background:var(--accent-soft);color:#b45309}
+  .pill-blue{background:var(--blue-soft);color:#0369a1}
+  .pill-red{background:var(--red-soft);color:#b91c1c}
+  .pill-gray{background:#f1f5f9;color:#475569}
+  .pill-indigo{background:var(--primary-soft);color:var(--primary-dark)}
+
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:700;padding:11px 16px;border-bottom:1px solid var(--border);background:var(--surface2)}
+  td{padding:13px 16px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tbody tr{transition:.12s}
+  tbody tr:hover{background:var(--surface2)}
+  .t-name{font-weight:700}
+  .t-sub{font-size:11.5px;color:var(--muted)}
+
+  .grid{display:grid;gap:16px}
+  .input,.select,textarea.input{width:100%;padding:10px 12px;border:1px solid var(--border-dark);border-radius:9px;font-size:13.5px;font-family:inherit;background:var(--surface);color:var(--ink);transition:.15s}
+  .input:focus,.select:focus,textarea.input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:#334155}
+  .field .hint{font-size:11px;color:var(--muted2);margin-top:4px}
+
+  /* avatar chips */
+  .chip{display:inline-flex;align-items:center;gap:8px}
+  .ava{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;color:#fff;flex-shrink:0}
+
+  /* KPI */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .kpi .ic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+  .kpi .ic svg{width:20px;height:20px;stroke-width:2.2}
+  .kpi .lbl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  .kpi .val{font-size:30px;font-weight:900;letter-spacing:-1px;margin-top:2px;line-height:1}
+  .kpi .sub{font-size:11.5px;color:var(--muted2);margin-top:6px}
+
+  /* MODAL */
+  .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(3px);z-index:200;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;animation:fade .15s}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{background:var(--surface);border-radius:16px;width:100%;max-width:560px;box-shadow:var(--shadow-lg);animation:pop .18s}
+  .modal.wide{max-width:760px}
+  @keyframes pop{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+  .modal-h{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .modal-h h3{font-size:16px;font-weight:800}
+  .modal-h p{font-size:12px;color:var(--muted);margin-top:2px}
+  .modal-b{padding:24px;max-height:65vh;overflow-y:auto}
+  .modal-f{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;background:var(--surface2);border-radius:0 0 16px 16px}
+  .x{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:16px}
+  .x:hover{background:var(--red-soft);color:var(--red);border-color:var(--red-soft)}
+
+  /* PROCESS KANBAN */
+  .kanban{display:grid;grid-template-columns:repeat(6,minmax(200px,1fr));gap:14px;overflow-x:auto;padding-bottom:8px}
+  .kcol{background:var(--surface2);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;min-height:200px}
+  .kcol-h{padding:12px 13px;border-bottom:1px solid var(--border);position:sticky;top:0}
+  .kcol-h .n{font-size:9px;font-weight:800;color:var(--muted2);letter-spacing:.5px}
+  .kcol-h .t{font-size:12.5px;font-weight:700;margin-top:2px;line-height:1.2}
+  .kcol-h .c{font-size:10px;color:var(--muted);margin-top:3px}
+  .kcol-b{padding:10px;display:flex;flex-direction:column;gap:9px;flex:1}
+  .kcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 12px;box-shadow:var(--shadow);cursor:pointer;transition:.15s}
+  .kcard:hover{border-color:var(--primary-mid);box-shadow:var(--shadow-lg);transform:translateY(-1px)}
+  .kcard .kt{font-size:12.5px;font-weight:700}
+  .kcard .ks{font-size:11px;color:var(--muted);margin-top:3px}
+  .kcard .kfoot{display:flex;align-items:center;justify-content:space-between;margin-top:9px}
+
+  /* CALENDAR */
+  .cal-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+  .cal-nav{display:flex;gap:4px}
+  .cal-nav button{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:15px}
+  .cal-nav button:hover{background:var(--surface2)}
+  .cal-month{font-size:17px;font-weight:800;text-transform:capitalize;min-width:180px}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .cal-dow{background:var(--surface2);padding:9px;text-align:center;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+  .cal-cell{background:var(--surface);min-height:104px;padding:7px 7px 5px;position:relative;transition:.12s}
+  .cal-cell:hover{background:var(--surface2)}
+  .cal-cell.out{background:#fbfcfe;color:var(--muted2)}
+  .cal-cell.today{background:var(--primary-soft)}
+  .cal-date{font-size:12px;font-weight:700;margin-bottom:5px}
+  .cal-cell.today .cal-date{color:var(--primary);width:22px;height:22px;background:var(--primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .cal-add{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--muted);display:none;align-items:center;justify-content:center;font-size:14px;line-height:1}
+  .cal-cell:hover .cal-add{display:flex}
+  .ev{font-size:10.5px;padding:3px 6px;border-radius:5px;margin-bottom:3px;cursor:pointer;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:3px solid}
+  .ev .evt{font-size:9.5px;opacity:.85;font-weight:500}
+
+  .empty{text-align:center;padding:50px 20px;color:var(--muted)}
+  .empty svg{width:42px;height:42px;stroke-width:1.6;color:var(--muted2);margin-bottom:12px}
+  .empty p{font-size:13px}
+
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+  .legend span{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);font-weight:500}
+  .legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+  /* signature pad */
+  .sigpad{border:2px dashed var(--border-dark);border-radius:10px;background:var(--surface2);touch-action:none;display:block;width:100%;cursor:crosshair}
+  .sig-done{border:2px solid var(--green);border-radius:10px;background:var(--green-soft);padding:14px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:#15803d}
+
+  .progress{height:7px;background:var(--border);border-radius:5px;overflow:hidden}
+  .progress > i{display:block;height:100%;background:var(--primary);border-radius:5px}
+
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:20px}
+  .tab{padding:10px 16px;font-size:13px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;margin-bottom:-1px}
+  .tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:var(--shadow-lg);z-index:300;display:flex;align-items:center;gap:9px;animation:pop .2s}
+  .toast svg{width:17px;height:17px;color:#4ade80}
+
+  .stars{display:inline-flex;gap:2px}
+  .star{font-size:15px;color:var(--accent)}
+  .star.off{color:var(--border-dark)}
+
+  .two-col{display:grid;grid-template-columns:1.6fr 1fr;gap:20px}
+  @media(max-width:1100px){.two-col{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">AS</div>
+      <div class="brand-txt"><b>AS Learning</b><span>LMS · Formation</span></div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="sb-foot">
+      <div class="role-box">
+        <label>Connecté en tant que</label>
+        <select id="roleSel" onchange="App.setRole(this.value)">
+          <option value="admin">Administrateur (gérante)</option>
+          <option value="formateur">Formateur</option>
+          <option value="stagiaire">Stagiaire</option>
+        </select>
+      </div>
+    </div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div><h1 id="pageTitle">Tableau de bord</h1><div class="crumb" id="pageCrumb">Vue d'ensemble de l'activité de formation</div></div>
+      <div class="topbar-right">
+        <button class="btn btn-sm" onclick="App.resetDemo()" title="Réinitialiser les données de démo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.4 2.6L3 8"/><path d="M3 3v5h5"/></svg>
+          Démo
+        </button>
+        <div class="who"><div><div class="nm" id="whoName">A. Graingeot</div><div class="rl" id="whoRole">Administratrice</div></div><div class="av" id="whoAv">AG</div></div>
+      </div>
+    </header>
+    <main class="view" id="view"></main>
+  </div>
+</div>
+<div id="modalRoot"></div>
+<div id="toastRoot"></div>
+
+<script>
+/* ============================================================
+   AS LEARNING — LMS  (prototype mono-fichier, persistance localStorage)
+   Couvre : centralisation des données · processus administratif 6 étapes
+   (cf. cartographie) · calendrier d'assignation des interventions formateurs
+   · émargement électronique · suivi de séance · programmes & auto-évaluation
+   · supports · reporting QUALIOPI
+   ============================================================ */
+
+/* ---------- ICONS (inline svg) ---------- */
+const I = {
+  dash:'<path d="M3 13h8V3H3zM13 21h8V11h-8zM13 3v6h8V3zM3 21h8v-6H3z"/>',
+  process:'<path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/><path d="M10 6.5h4M17.5 10v4M10 17.5h4M6.5 10v4"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  teacher:'<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+  cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  sign:'<path d="M12 19l7-7 3 3-7 7-3-3zM18 13l-1.5-7.5L2 2l3.5 14.5L13 18zM2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/>',
+  book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+  target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  folder:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',
+  report:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  hours:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  trend:'<path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/>',
+  alert:'<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/>',
+  doc:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>'
+};
+const svg=(p,cls)=>`<svg class="${cls||''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+
+/* ---------- SEED DATA ---------- */
+const COLORS=['#4f46e5','#0284c7','#16a34a','#f59e0b','#db2777','#7c3aed','#0d9488','#dc2626'];
+const STEPS=[
+  {n:1,t:'Prise de contact & Audit',c:'Demande, audit CECR, auto-évaluation, objectifs'},
+  {n:2,t:'Construction de l\'offre',c:'Formule, programme, devis, proposition'},
+  {n:3,t:'Mise en place administrative',c:'Conventions, formateur, planning, convocations'},
+  {n:4,t:'Déroulement de la formation',c:'Guide d\'animation, émargement, relances'},
+  {n:5,t:'Clôture & Certification',c:'Certificat de réalisation, satisfaction'},
+  {n:6,t:'Facturation & Archivage',c:'Factures + feuilles de présence, dépôt OPCO/CPF'}
+];
+
+function seed(){
+  const formateurs=[
+    {id:'f1',nom:'Sarah Mitchell',langue:'Anglais',email:'s.mitchell@aslearning.fr',tel:'06 12 34 56 78',natif:true,color:COLORS[0]},
+    {id:'f2',nom:'Klaus Bauer',langue:'Allemand',email:'k.bauer@aslearning.fr',tel:'06 22 11 33 44',natif:true,color:COLORS[1]},
+    {id:'f3',nom:'Elena Rossi',langue:'Italien',email:'e.rossi@aslearning.fr',tel:'06 55 66 77 88',natif:true,color:COLORS[2]},
+    {id:'f4',nom:'Diego Fernández',langue:'Espagnol',email:'d.fernandez@aslearning.fr',tel:'06 99 88 77 66',natif:true,color:COLORS[3]},
+    {id:'f5',nom:'James Carter',langue:'Anglais',email:'j.carter@aslearning.fr',tel:'06 44 55 66 77',natif:true,color:COLORS[4]},
+    {id:'f6',nom:'Anja Novak',langue:'Allemand',email:'a.novak@aslearning.fr',tel:'06 33 44 55 66',natif:true,color:COLORS[5]},
+    {id:'f7',nom:'Lucia Greco',langue:'Italien',email:'l.greco@aslearning.fr',tel:'06 11 22 33 44',natif:true,color:COLORS[6]},
+    {id:'f8',nom:'Tom Wilson',langue:'Anglais',email:'t.wilson@aslearning.fr',tel:'06 77 88 99 00',natif:true,color:COLORS[7]}
+  ];
+  const ent=['Daimler Truck','ArcelorMittal','Soprema','Hager Group','Lohr Industrie','Kuhn SAS','Mars Wrigley','De Dietrich'];
+  const prenoms=['Julien','Marie','Thomas','Camille','Nicolas','Sophie','Pierre','Laura','Antoine','Émilie','Maxime','Claire'];
+  const noms=['Weber','Schmitt','Muller','Klein','Meyer','Wagner','Becker','Hoffmann','Schneider','Fischer','Braun','Lambert'];
+  const langues=['Anglais','Allemand','Italien','Espagnol'];
+  const niveaux=['A1','A2','B1','B2','C1'];
+  const profils=['Technicien','Cadre','Dirigeant'];
+  const objs=['Réunions internationales','Négociation commerciale','Rédaction e-mails pro','Présentations clients','Communication technique','Préparation TOEIC','Échanges fournisseurs','Accueil visiteurs étrangers'];
+
+  const stagiaires=[];
+  for(let i=0;i<12;i++){
+    const lg=langues[i%4];
+    const f=formateurs.find(x=>x.langue===lg)||formateurs[0];
+    const vol=[20,30,40,50,15][i%5];
+    const done=Math.round(vol*[0.2,0.55,0.8,0.35,0.95,0.1,0.65,0.45,0.7,0.3,0.5,0.85][i]);
+    stagiaires.push({
+      id:'s'+(i+1),
+      prenom:prenoms[i],nom:noms[i],
+      entreprise:ent[i%ent.length],
+      langue:lg, niveauInitial:niveaux[i%5], niveauVise:niveaux[Math.min(4,(i%5)+1)],
+      profil:profils[i%3], objectif:objs[i%objs.length],
+      formateurId:f.id, volumeHeures:vol, heuresRealisees:done,
+      modalite:i%5===0?'Présentiel':'Visio',
+      financement:['OPCO','CPF','Plan entreprise','OPCO'][i%4],
+      statut:done>=vol?'Terminé':(done>0?'En cours':'À démarrer'),
+      email:prenoms[i].toLowerCase()+'.'+noms[i].toLowerCase()+'@exemple.fr',
+      autoEval:i<7?{niveau:niveaux[i%5],confiance:[2,3,2,4,3,2,3][i],besoins:objs[i%objs.length],dispo:'Mardi & jeudi matin',date:'2026-0'+((i%5)+1)+'-12'}:null
+    });
+  }
+
+  // dossiers (process) — un par stagiaire récent + quelques prospects
+  const dossiers=stagiaires.map((s,i)=>({
+    id:'d'+(i+1), stagiaireId:s.id, client:s.entreprise,
+    etape: s.statut==='Terminé'?6:(s.statut==='En cours'?4:[1,2,3][i%3]),
+    montant:[2400,3600,4800,6000,1800][i%5],
+    date:'2026-0'+((i%6)+1)+'-0'+((i%9)+1),
+    notes:''
+  }));
+  // 2 prospects sans stagiaire encore
+  dossiers.push({id:'d13',stagiaireId:null,client:'Punch Powerglide',etape:1,montant:0,date:'2026-06-02',notes:'Demande reçue par mail — audit à planifier'});
+  dossiers.push({id:'d14',stagiaireId:null,client:'Mathis SAS',etape:2,montant:3200,date:'2026-06-05',notes:'Offre en cours de rédaction'});
+
+  // séances (calendrier) — réparties autour de la date du jour
+  const seances=[];
+  const today=new Date(); today.setHours(0,0,0,0);
+  let sid=1;
+  const slots=[['09:00','10:30'],['11:00','12:30'],['14:00','15:30'],['16:00','17:30']];
+  for(let d=-20;d<=25;d++){
+    if(Math.random()<0.55){
+      const date=new Date(today); date.setDate(today.getDate()+d);
+      if(date.getDay()===0||date.getDay()===6) continue;
+      const nb=Math.random()<0.4?2:1;
+      const used=[];
+      for(let k=0;k<nb;k++){
+        const st=stagiaires[Math.floor(Math.random()*stagiaires.length)];
+        if(used.includes(st.id))continue; used.push(st.id);
+        const slot=slots[Math.floor(Math.random()*slots.length)];
+        const past=d<0||(d===0);
+        seances.push({
+          id:'se'+(sid++), stagiaireId:st.id, formateurId:st.formateurId,
+          date:fmtD(date), debut:slot[0], fin:slot[1],
+          modalite:st.modalite,
+          statut: past?'Réalisée':'Planifiée',
+          emargement: past?{stagiaire:'(signé)',formateur:'(signé)',ts:date.toISOString()}:null,
+          suivi: past?{objectifs:'Révision '+st.objectif.toLowerCase(),ressources:'Support PDF + audio',progression:[3,4,5][k%3],commentaires:'Bonne participation, à consolider.'}:null
+        });
+      }
+    }
+  }
+
+  const supports=[
+    {id:'sup1',stagiaireId:'s1',nom:'Business English — Unit 3.pdf',type:'PDF',taille:'1.2 Mo',date:'2026-05-10',formateurId:'f1'},
+    {id:'sup2',stagiaireId:'s1',nom:'Listening exercise - meetings.mp3',type:'Audio',taille:'4.8 Mo',date:'2026-05-10',formateurId:'f1'},
+    {id:'sup3',stagiaireId:'s2',nom:'Deutsch im Beruf - Kapitel 2.pdf',type:'PDF',taille:'2.1 Mo',date:'2026-05-12',formateurId:'f2'},
+    {id:'sup4',stagiaireId:'s3',nom:'Italiano commerciale.pdf',type:'PDF',taille:'1.6 Mo',date:'2026-05-14',formateurId:'f3'}
+  ];
+
+  const programmes=[
+    {id:'p1',stagiaireId:'s1',titre:'Anglais professionnel — Réunions & négociation',duree:30,modules:['Vocabulaire métier','Conduite de réunion','Négociation','Préparation TOEIC'],modele:'Cadre'},
+    {id:'p2',stagiaireId:'s2',titre:'Allemand technique — Échanges fournisseurs',duree:40,modules:['Vocabulaire technique','Rédaction e-mails','Appels téléphoniques','Visite de site'],modele:'Technicien'}
+  ];
+
+  return {formateurs,stagiaires,dossiers,seances,supports,programmes,
+    settings:{role:'admin'}};
+}
+
+/* ---------- STORE ---------- */
+const KEY='aslearning_lms_v1';
+const DB={
+  data:null,
+  load(){ try{const r=localStorage.getItem(KEY); this.data=r?JSON.parse(r):seed(); if(!r)this.save();}catch(e){this.data=seed();} },
+  save(){ localStorage.setItem(KEY,JSON.stringify(this.data)); },
+  reset(){ this.data=seed(); this.save(); }
+};
+
+/* ---------- HELPERS ---------- */
+function fmtD(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),da=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${da}`;}
+function parseD(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+function initials(s){return s.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+function uid(p){return p+Math.random().toString(36).slice(2,8);}
+function esc(s){return(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+const stag=id=>DB.data.stagiaires.find(s=>s.id===id);
+const form=id=>DB.data.formateurs.find(f=>f.id===id);
+const stagName=id=>{const s=stag(id);return s?s.prenom+' '+s.nom:'—';};
+const MONTHS=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const DOW=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+function frDate(s){const d=parseD(s);return d.getDate()+' '+MONTHS[d.getMonth()].slice(0,4)+'. '+d.getFullYear();}
+function statutPill(st){const m={'Terminé':'green','En cours':'blue','À démarrer':'gray'};return `<span class="pill pill-${m[st]||'gray'}"><span class="dot" style="background:currentColor"></span>${st}</span>`;}
+
+/* ---------- APP / ROUTER ---------- */
+const App={
+  page:'dash',
+  roles:{admin:{name:'A. Graingeot',role:'Administratrice',av:'AG'},formateur:{name:'Sarah Mitchell',role:'Formatrice · Anglais',av:'SM'},stagiaire:{name:'Julien Weber',role:'Stagiaire · Daimler Truck',av:'JW'}},
+  nav:[
+    {id:'dash',t:'Tableau de bord',i:I.dash,roles:['admin','formateur','stagiaire']},
+    {id:'process',t:'Processus formation',i:I.process,roles:['admin'],sec:'Gestion'},
+    {id:'stagiaires',t:'Stagiaires',i:I.users,roles:['admin','formateur']},
+    {id:'formateurs',t:'Formateurs',i:I.teacher,roles:['admin']},
+    {id:'calendar',t:'Calendrier',i:I.cal,roles:['admin','formateur','stagiaire'],sec:'Pédagogie'},
+    {id:'emargement',t:'Émargement',i:I.sign,roles:['admin','formateur','stagiaire']},
+    {id:'suivi',t:'Suivi de séance',i:I.book,roles:['admin','formateur']},
+    {id:'programmes',t:'Programmes & Auto-éval.',i:I.target,roles:['admin','formateur','stagiaire']},
+    {id:'supports',t:'Supports pédagogiques',i:I.folder,roles:['admin','formateur','stagiaire']},
+    {id:'reporting',t:'Reporting QUALIOPI',i:I.report,roles:['admin'],sec:'Conformité'}
+  ],
+  start(){ DB.load(); this.page='dash'; if(DB.data.settings&&DB.data.settings.role){document.getElementById('roleSel').value=DB.data.settings.role;} this.renderNav(); this.go('dash'); },
+  get role(){return (DB.data.settings&&DB.data.settings.role)||'admin';},
+  setRole(r){ DB.data.settings.role=r; DB.save(); this.renderNav(); const w=this.roles[r]; whoName.textContent=w.name;whoRole.textContent=w.role;whoAv.textContent=w.av; if(!this.nav.find(n=>n.id===this.page&&n.roles.includes(r)))this.page='dash'; this.go(this.page); },
+  renderNav(){
+    const r=this.role; let html='';let lastSec=null;
+    this.nav.filter(n=>n.roles.includes(r)).forEach(n=>{
+      if(n.sec&&n.sec!==lastSec){html+=`<div class="nav-label">${n.sec}</div>`;lastSec=n.sec;}
+      else if(!lastSec&&!n.sec){}
+      const badge=this.navBadge(n.id);
+      html+=`<div class="nav-item ${n.id===this.page?'active':''}" onclick="App.go('${n.id}')">${svg(n.i,'nav-ico')}<span>${n.t}</span>${badge!=null?`<span class="nav-badge">${badge}</span>`:''}</div>`;
+    });
+    document.getElementById('nav').innerHTML=html;
+    const w=this.roles[r];whoName.textContent=w.name;whoRole.textContent=w.role;whoAv.textContent=w.av;
+  },
+  navBadge(id){
+    if(id==='stagiaires')return DB.data.stagiaires.filter(s=>s.statut!=='Terminé').length;
+    if(id==='process')return DB.data.dossiers.filter(d=>d.etape<6).length;
+    if(id==='emargement')return DB.data.seances.filter(s=>s.statut==='Réalisée'&&(!s.emargement||!s.emargement.stagiaire)).length||null;
+    return null;
+  },
+  go(p){ this.page=p; this.renderNav(); const v=Views[p]||Views.dash; const meta=this.nav.find(n=>n.id===p)||{t:''};
+    document.getElementById('pageTitle').textContent=meta.t; document.getElementById('pageCrumb').textContent=CRUMB[p]||'';
+    document.getElementById('view').innerHTML=v(); window.scrollTo(0,0); if(AFTER[p])AFTER[p](); },
+  resetDemo(){ if(confirm('Réinitialiser toutes les données de démonstration ?')){DB.reset();toast('Données de démo réinitialisées');this.go(this.page);} }
+};
+const CRUMB={dash:'Vue d\'ensemble de l\'activité de formation',process:'De la demande à la facturation — cartographie du processus',stagiaires:'Fiches, parcours et suivi des apprenants',formateurs:'Équipe pédagogique et disponibilités',calendar:'Planification et assignation des interventions',emargement:'Signature électronique horodatée (preuve QUALIOPI)',suivi:'Cahier d\'animation séance par séance',programmes:'Programmes personnalisés et auto-évaluations',supports:'Ressources pédagogiques par stagiaire',reporting:'Indicateurs et documents d\'audit QUALIOPI'};
+
+/* ---------- MODAL / TOAST ---------- */
+function modal(html){document.getElementById('modalRoot').innerHTML=`<div class="modal-bg" onclick="if(event.target===this)closeModal()">${html}</div>`;}
+function closeModal(){document.getElementById('modalRoot').innerHTML='';}
+function toast(msg){const r=document.getElementById('toastRoot');r.innerHTML=`<div class="toast">${svg(I.check)}${esc(msg)}</div>`;setTimeout(()=>r.innerHTML='',2400);}
+function val(id){const e=document.getElementById(id);return e?e.value.trim():'';}
+
+/* ============================================================
+   VIEWS
+   ============================================================ */
+const Views={};
+const AFTER={};
+
+/* ---- DASHBOARD ---- */
+Views.dash=function(){
+  const d=DB.data; const role=App.role;
+  const actifs=d.stagiaires.filter(s=>s.statut!=='Terminé').length;
+  const totH=d.stagiaires.reduce((a,s)=>a+s.volumeHeures,0);
+  const realH=d.stagiaires.reduce((a,s)=>a+s.heuresRealisees,0);
+  const seancesReal=d.seances.filter(s=>s.statut==='Réalisée');
+  const signed=seancesReal.filter(s=>s.emargement&&s.emargement.stagiaire).length;
+  const assiduite=seancesReal.length?Math.round(signed/seancesReal.length*100):100;
+  const today=fmtD(new Date());
+  const todaySeances=d.seances.filter(s=>s.date===today).sort((a,b)=>a.debut.localeCompare(b.debut));
+  const upcoming=d.seances.filter(s=>s.date>=today&&s.statut==='Planifiée').sort((a,b)=>a.date.localeCompare(b.date)||a.debut.localeCompare(b.debut)).slice(0,6);
+
+  const kpi=(ic,col,lbl,v,sub)=>`<div class="kpi"><div class="ic" style="background:${col}20;color:${col}">${svg(ic)}</div><div class="lbl">${lbl}</div><div class="val">${v}</div><div class="sub">${sub}</div></div>`;
+
+  let html=`<div class="kpis">
+    ${kpi(I.users,'#4f46e5','Stagiaires actifs',actifs,`${d.stagiaires.length} au total`)}
+    ${kpi(I.hours,'#0284c7','Heures réalisées',realH+'h',`sur ${totH}h planifiées`)}
+    ${kpi(I.trend,'#16a34a','Taux d\'assiduité',assiduite+'%',`${signed}/${seancesReal.length} séances émargées`)}
+    ${kpi(I.teacher,'#f59e0b','Formateurs',d.formateurs.length,`${[...new Set(d.formateurs.map(f=>f.langue))].length} langues couvertes`)}
+  </div>`;
+
+  html+=`<div class="two-col">
+    <div class="card">
+      <div class="card-h"><h3>Séances à venir</h3><button class="btn btn-sm" onclick="App.go('calendar')">Voir le calendrier</button></div>
+      <div class="card-b" style="padding:0">
+        ${upcoming.length?`<table><thead><tr><th>Date</th><th>Stagiaire</th><th>Formateur</th><th>Créneau</th><th>Modalité</th></tr></thead><tbody>
+        ${upcoming.map(s=>{const f=form(s.formateurId);return `<tr><td><b>${frDate(s.date)}</b></td><td>${stagName(s.stagiaireId)}</td><td><span class="chip"><span class="ava" style="background:${f.color}">${initials(f.nom)}</span>${f.nom}</span></td><td>${s.debut} – ${s.fin}</td><td><span class="pill pill-${s.modalite==='Visio'?'blue':'amber'}">${s.modalite}</span></td></tr>`;}).join('')}
+        </tbody></table>`:`<div class="empty">${svg(I.cal)}<p>Aucune séance planifiée à venir.</p></div>`}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>Aujourd'hui · ${frDate(today)}</h3></div>
+      <div class="card-b">
+        ${todaySeances.length?todaySeances.map(s=>{const f=form(s.formateurId);return `<div style="display:flex;gap:11px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)"><div style="text-align:center;min-width:46px"><div style="font-weight:800;font-size:13px">${s.debut}</div><div style="font-size:10px;color:var(--muted)">${s.fin}</div></div><div style="width:3px;height:34px;border-radius:3px;background:${f.color}"></div><div><div style="font-weight:700;font-size:12.5px">${stagName(s.stagiaireId)}</div><div style="font-size:11px;color:var(--muted)">${f.nom} · ${s.modalite}</div></div></div>`;}).join(''):`<div class="empty" style="padding:30px 10px">${svg(I.clock)}<p>Pas de séance aujourd'hui.</p></div>`}
+      </div>
+    </div>
+  </div>`;
+
+  // process overview
+  html+=`<div class="card" style="margin-top:20px">
+    <div class="card-h"><h3>Pipeline du processus de formation</h3><button class="btn btn-sm" onclick="App.go('process')">Détailler</button></div>
+    <div class="card-b">
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px">
+      ${STEPS.map(st=>{const n=d.dossiers.filter(x=>x.etape===st.n).length;return `<div style="text-align:center"><div style="font-size:26px;font-weight:900;color:var(--primary)">${n}</div><div style="font-size:10.5px;color:var(--muted);font-weight:600;margin-top:2px;line-height:1.25">${st.n}. ${st.t}</div></div>`;}).join('')}
+      </div>
+    </div>
+  </div>`;
+  return html;
+};
+
+/* ---- PROCESS (kanban 6 étapes) ---- */
+Views.process=function(){
+  const d=DB.data;
+  let html=`<div class="section-row"><div><h2>Processus administratif</h2><p>Cartographie en 6 étapes — de la demande de formation à la facturation et l'archivage</p></div><button class="btn btn-primary" onclick="Forms.dossier()">${svg(I.plus)}Nouveau dossier</button></div>`;
+  html+=`<div class="kanban">${STEPS.map(st=>{
+    const items=d.dossiers.filter(x=>x.etape===st.n);
+    return `<div class="kcol"><div class="kcol-h"><div class="n">ÉTAPE ${st.n}</div><div class="t">${st.t}</div><div class="c">${st.c}</div></div>
+    <div class="kcol-b">${items.length?items.map(x=>{
+      const s=x.stagiaireId?stag(x.stagiaireId):null;
+      const f=s?form(s.formateurId):null;
+      return `<div class="kcard" onclick="Forms.dossierDetail('${x.id}')">
+        <div class="kt">${esc(x.client)}</div>
+        <div class="ks">${s?esc(s.prenom+' '+s.nom)+' · '+esc(s.langue):'<i>Prospect</i>'}</div>
+        <div class="kfoot">${x.montant?`<span class="pill pill-indigo">${x.montant.toLocaleString('fr')} €</span>`:'<span class="pill pill-gray">à chiffrer</span>'}${f?`<span class="ava" style="background:${f.color};width:24px;height:24px;font-size:9px" title="${esc(f.nom)}">${initials(f.nom)}</span>`:''}</div>
+      </div>`;}).join(''):`<div style="text-align:center;color:var(--muted2);font-size:11px;padding:14px 4px">—</div>`}</div></div>`;
+  }).join('')}</div>`;
+  return html;
+};
+
+/* ---- STAGIAIRES ---- */
+let stagFilter='';
+Views.stagiaires=function(){
+  const d=DB.data;
+  let rows=d.stagiaires;
+  if(App.role==='formateur')rows=rows.filter(s=>s.formateurId==='f1');
+  if(stagFilter)rows=rows.filter(s=>s.langue===stagFilter);
+  let html=`<div class="section-row"><div><h2>Stagiaires</h2><p>${rows.length} apprenant(s) · fiches, parcours et volume d'heures</p></div>
+    <div style="display:flex;gap:10px">
+      <select class="select" style="width:auto" onchange="App._stagFilter(this.value)"><option value="">Toutes les langues</option>${[...new Set(d.stagiaires.map(s=>s.langue))].map(l=>`<option ${stagFilter===l?'selected':''}>${l}</option>`).join('')}</select>
+      ${App.role==='admin'?`<button class="btn btn-primary" onclick="Forms.stagiaire()">${svg(I.plus)}Nouveau stagiaire</button>`:''}
+    </div></div>`;
+  if(!rows.length)return html+`<div class="card"><div class="empty">${svg(I.users)}<p>Aucun stagiaire pour ce filtre.</p></div></div>`;
+  html+=`<div class="card"><table id="stagTable"><thead><tr><th>Stagiaire</th><th>Entreprise</th><th>Langue / Niveau</th><th>Formateur</th><th>Progression</th><th>Statut</th><th>Financement</th></tr></thead><tbody>`;
+  html+=rows.map(s=>{
+    const f=form(s.formateurId);const pct=Math.round(s.heuresRealisees/s.volumeHeures*100);
+    return `<tr style="cursor:pointer" onclick="Forms.stagiaireDetail('${s.id}')">
+      <td><div class="chip"><span class="ava" style="background:${f?f.color:'#888'}">${initials(s.prenom+' '+s.nom)}</span><div><div class="t-name">${esc(s.prenom)} ${esc(s.nom)}</div><div class="t-sub">${esc(s.profil)}</div></div></div></td>
+      <td>${esc(s.entreprise)}</td>
+      <td><span class="pill pill-indigo">${esc(s.langue)}</span> <span class="t-sub">${s.niveauInitial}→${s.niveauVise}</span></td>
+      <td>${f?esc(f.nom):'—'}</td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="progress" style="width:80px"><i style="width:${pct}%"></i></div><span class="t-sub">${s.heuresRealisees}/${s.volumeHeures}h</span></div></td>
+      <td>${statutPill(s.statut)}</td>
+      <td><span class="pill pill-gray">${esc(s.financement)}</span></td>
+    </tr>`;}).join('');
+  html+=`</tbody></table></div>`;
+  return html;
+};
+
+/* ---- FORMATEURS ---- */
+Views.formateurs=function(){
+  const d=DB.data;
+  let html=`<div class="section-row"><div><h2>Formateurs</h2><p>Équipe pédagogique externe · ${d.formateurs.length} formateurs natifs</p></div><button class="btn btn-primary" onclick="Forms.formateur()">${svg(I.plus)}Ajouter un formateur</button></div>`;
+  html+=`<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(290px,1fr))">`;
+  html+=d.formateurs.map(f=>{
+    const sts=d.stagiaires.filter(s=>s.formateurId===f.id);
+    const actifs=sts.filter(s=>s.statut!=='Terminé').length;
+    const h=d.seances.filter(s=>s.formateurId===f.id&&s.statut==='Réalisée').length;
+    return `<div class="card"><div class="card-b">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <span class="ava" style="background:${f.color};width:44px;height:44px;font-size:15px;border-radius:11px">${initials(f.nom)}</span>
+        <div><div style="font-weight:800;font-size:15px">${esc(f.nom)}</div><div class="t-sub">${esc(f.langue)} ${f.natif?'· natif':''}</div></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <div style="flex:1;background:var(--surface2);border-radius:9px;padding:9px;text-align:center"><div style="font-weight:900;font-size:18px;color:var(--primary)">${sts.length}</div><div class="t-sub">stagiaires</div></div>
+        <div style="flex:1;background:var(--surface2);border-radius:9px;padding:9px;text-align:center"><div style="font-weight:900;font-size:18px;color:var(--green)">${actifs}</div><div class="t-sub">actifs</div></div>
+        <div style="flex:1;background:var(--surface2);border-radius:9px;padding:9px;text-align:center"><div style="font-weight:900;font-size:18px;color:var(--accent)">${h}</div><div class="t-sub">séances</div></div>
+      </div>
+      <div class="t-sub" style="display:flex;flex-direction:column;gap:3px">
+        <span>✉ ${esc(f.email)}</span><span>☎ ${esc(f.tel)}</span>
+      </div>
+    </div></div>`;}).join('');
+  html+=`</div>`;
+  return html;
+};
+
+/* ---- CALENDAR ---- */
+let calRef=new Date();calRef.setDate(1);
+let calFilterF='';
+Views.calendar=function(){
+  const d=DB.data;
+  const y=calRef.getFullYear(),m=calRef.getMonth();
+  const first=new Date(y,m,1);let start=(first.getDay()+6)%7; // Monday=0
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const today=fmtD(new Date());
+  let html=`<div class="section-row"><div><h2>Calendrier des interventions</h2><p>Planification et assignation des séances aux formateurs · disponibilités en temps réel</p></div>
+    <button class="btn btn-primary" onclick="Forms.seance()">${svg(I.plus)}Planifier une séance</button></div>`;
+  html+=`<div class="cal-head">
+    <div class="cal-nav"><button onclick="App._calMove(-1)">‹</button><button onclick="App._calToday()">•</button><button onclick="App._calMove(1)">›</button></div>
+    <div class="cal-month">${MONTHS[m]} ${y}</div>
+    <select class="select" style="width:auto;margin-left:auto" onchange="App._calFilter(this.value)">
+      <option value="">Tous les formateurs</option>
+      ${d.formateurs.map(f=>`<option value="${f.id}" ${calFilterF===f.id?'selected':''}>${esc(f.nom)} (${esc(f.langue)})</option>`).join('')}
+    </select>
+  </div>`;
+  html+=`<div class="cal-grid">${DOW.map(x=>`<div class="cal-dow">${x}</div>`).join('')}`;
+  let seances=d.seances; if(calFilterF)seances=seances.filter(s=>s.formateurId===calFilterF);
+  // leading blanks
+  for(let i=0;i<start;i++){const dd=new Date(y,m,1-(start-i));html+=`<div class="cal-cell out"><div class="cal-date">${dd.getDate()}</div></div>`;}
+  for(let day=1;day<=daysInMonth;day++){
+    const ds=fmtD(new Date(y,m,day));
+    const evs=seances.filter(s=>s.date===ds).sort((a,b)=>a.debut.localeCompare(b.debut));
+    html+=`<div class="cal-cell ${ds===today?'today':''}"><div class="cal-date">${day}</div><div class="cal-add" onclick="event.stopPropagation();Forms.seance('${ds}')">+</div>`;
+    html+=evs.slice(0,4).map(s=>{const f=form(s.formateurId);const done=s.statut==='Réalisée';return `<div class="ev" style="background:${f.color}1a;color:${f.color};border-left-color:${f.color};${done?'opacity:.65':''}" onclick="event.stopPropagation();Forms.seanceDetail('${s.id}')"><b>${s.debut}</b> ${esc(stagName(s.stagiaireId).split(' ')[0])}<div class="evt">${esc(f.nom.split(' ')[0])} · ${s.modalite}</div></div>`;}).join('');
+    if(evs.length>4)html+=`<div style="font-size:10px;color:var(--muted);font-weight:600;padding-left:4px">+${evs.length-4} autre(s)</div>`;
+    html+=`</div>`;
+  }
+  const cells=start+daysInMonth;const trail=(7-cells%7)%7;
+  for(let i=1;i<=trail;i++){html+=`<div class="cal-cell out"><div class="cal-date">${i}</div></div>`;}
+  html+=`</div>`;
+  // legend
+  html+=`<div class="legend">${d.formateurs.map(f=>`<span><i style="background:${f.color}"></i>${esc(f.nom)} · ${esc(f.langue)}</span>`).join('')}</div>`;
+  return html;
+};
+App._calMove=function(n){calRef.setMonth(calRef.getMonth()+n);App.go('calendar');};
+App._calToday=function(){calRef=new Date();calRef.setDate(1);App.go('calendar');};
+App._calFilter=function(v){calFilterF=v;App.go('calendar');};
+App._stagFilter=function(v){stagFilter=v;App.go('stagiaires');};
+
+/* ---- ÉMARGEMENT ---- */
+Views.emargement=function(){
+  const d=DB.data;
+  const today=fmtD(new Date());
+  const seances=d.seances.filter(s=>s.date<=today).sort((a,b)=>b.date.localeCompare(a.date)||b.debut.localeCompare(a.debut));
+  let html=`<div class="section-row"><div><h2>Émargement électronique</h2><p>Signature horodatée du stagiaire et du formateur — preuve d'assiduité QUALIOPI</p></div>
+    <button class="btn" onclick="Exports.emargement()">${svg(I.doc)}Exporter les feuilles (CSV)</button></div>`;
+  if(!seances.length)return html+`<div class="card"><div class="empty">${svg(I.sign)}<p>Aucune séance passée à émarger.</p></div></div>`;
+  html+=`<div class="card"><table><thead><tr><th>Date</th><th>Créneau</th><th>Stagiaire</th><th>Formateur</th><th>Modalité</th><th>Émargement</th><th></th></tr></thead><tbody>`;
+  html+=seances.map(s=>{
+    const f=form(s.formateurId);const signed=s.emargement&&s.emargement.stagiaire;
+    return `<tr><td><b>${frDate(s.date)}</b></td><td>${s.debut}–${s.fin}</td><td>${stagName(s.stagiaireId)}</td><td>${esc(f.nom)}</td><td><span class="pill pill-${s.modalite==='Visio'?'blue':'amber'}">${s.modalite}</span></td>
+    <td>${signed?`<span class="pill pill-green">${svg(I.check)} Signé</span>`:`<span class="pill pill-red">En attente</span>`}</td>
+    <td>${signed?`<button class="btn btn-sm btn-ghost" onclick="Forms.emargeView('${s.id}')">Voir</button>`:`<button class="btn btn-sm btn-primary" onclick="Forms.emarge('${s.id}')">Signer</button>`}</td></tr>`;
+  }).join('');
+  html+=`</tbody></table></div>`;
+  return html;
+};
+
+/* ---- SUIVI DE SÉANCE ---- */
+Views.suivi=function(){
+  const d=DB.data;
+  const today=fmtD(new Date());
+  const realisees=d.seances.filter(s=>s.date<=today).sort((a,b)=>b.date.localeCompare(a.date));
+  let html=`<div class="section-row"><div><h2>Suivi de séance — cahier d'animation</h2><p>Objectifs travaillés, ressources, progression et commentaires après chaque cours</p></div></div>`;
+  html+=`<div class="card"><table><thead><tr><th>Date</th><th>Stagiaire</th><th>Formateur</th><th>Objectifs travaillés</th><th>Progression</th><th></th></tr></thead><tbody>`;
+  html+=realisees.map(s=>{
+    const f=form(s.formateurId);const sv=s.suivi;
+    return `<tr><td><b>${frDate(s.date)}</b><div class="t-sub">${s.debut}</div></td><td>${stagName(s.stagiaireId)}</td><td>${esc(f.nom)}</td>
+    <td>${sv?esc(sv.objectifs):'<span class="t-sub"><i>Non renseigné</i></span>'}</td>
+    <td>${sv?stars(sv.progression):'—'}</td>
+    <td><button class="btn btn-sm ${sv?'btn-ghost':'btn-primary'}" onclick="Forms.suivi('${s.id}')">${sv?'Modifier':'Compléter'}</button></td></tr>`;
+  }).join('');
+  html+=`</tbody></table></div>`;
+  return html;
+};
+function stars(n){let h='<span class="stars">';for(let i=1;i<=5;i++)h+=`<span class="star ${i<=n?'':'off'}">★</span>`;return h+'</span>';}
+
+/* ---- PROGRAMMES & AUTO-ÉVAL ---- */
+Views.programmes=function(){
+  const d=DB.data;
+  let html=`<div class="tabs"><div class="tab active" onclick="Views._progTab('prog',this)">Programmes de formation</div><div class="tab" onclick="Views._progTab('eval',this)">Auto-évaluations</div></div>`;
+  html+=`<div id="progArea">${progList()}</div>`;
+  return html;
+};
+function progList(){
+  const d=DB.data;
+  let html=`<div class="section-row"><div><h2>Programmes personnalisés</h2><p>Un programme par stagiaire · modèles réutilisables par profil</p></div><button class="btn btn-primary" onclick="Forms.programme()">${svg(I.plus)}Nouveau programme</button></div>`;
+  if(!d.programmes.length)return html+`<div class="card"><div class="empty">${svg(I.target)}<p>Aucun programme. Générez-en un depuis une auto-évaluation.</p></div></div>`;
+  html+=`<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(330px,1fr))">`;
+  html+=d.programmes.map(p=>{const s=stag(p.stagiaireId);return `<div class="card"><div class="card-b">
+    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px"><span class="pill pill-indigo">${esc(p.modele)}</span><span class="pill pill-gray">${p.duree}h</span></div>
+    <div style="font-weight:800;font-size:14.5px;line-height:1.3;margin-bottom:4px">${esc(p.titre)}</div>
+    <div class="t-sub" style="margin-bottom:12px">${s?esc(s.prenom+' '+s.nom+' · '+s.entreprise):''}</div>
+    <div style="display:flex;flex-direction:column;gap:6px">${p.modules.map((m,i)=>`<div style="display:flex;gap:9px;align-items:center;font-size:12.5px"><span style="width:20px;height:20px;border-radius:6px;background:var(--primary-soft);color:var(--primary);font-weight:800;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span>${esc(m)}</div>`).join('')}</div>
+  </div></div>`;}).join('');
+  html+=`</div>`;
+  return html;
+}
+function evalList(){
+  const d=DB.data;
+  const evals=d.stagiaires.filter(s=>s.autoEval);
+  let html=`<div class="section-row"><div><h2>Auto-évaluations</h2><p>Formulaires remplis par les stagiaires — base de construction du programme</p></div><button class="btn btn-primary" onclick="Forms.autoEval()">${svg(I.plus)}Nouvelle auto-évaluation</button></div>`;
+  html+=`<div class="card"><table><thead><tr><th>Stagiaire</th><th>Langue</th><th>Niveau perçu</th><th>Confiance</th><th>Besoin principal</th><th>Disponibilités</th><th></th></tr></thead><tbody>`;
+  html+=evals.map(s=>`<tr><td class="t-name">${esc(s.prenom+' '+s.nom)}</td><td><span class="pill pill-indigo">${esc(s.langue)}</span></td><td>${esc(s.autoEval.niveau)}</td><td>${stars(s.autoEval.confiance)}</td><td>${esc(s.autoEval.besoins)}</td><td class="t-sub">${esc(s.autoEval.dispo)}</td><td><button class="btn btn-sm btn-primary" onclick="Forms.genProg('${s.id}')">Générer programme</button></td></tr>`).join('');
+  html+=`</tbody></table></div>`;
+  return html;
+}
+Views._progTab=function(t,el){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));el.classList.add('active');document.getElementById('progArea').innerHTML=t==='prog'?progList():evalList();};
+
+/* ---- SUPPORTS ---- */
+Views.supports=function(){
+  const d=DB.data;
+  let html=`<div class="section-row"><div><h2>Supports pédagogiques</h2><p>Ressources (PDF, audio, vidéo) rattachées à un stagiaire</p></div><button class="btn btn-primary" onclick="Forms.support()">${svg(I.plus)}Déposer un support</button></div>`;
+  if(!d.supports.length)return html+`<div class="card"><div class="empty">${svg(I.folder)}<p>Aucun support déposé.</p></div></div>`;
+  html+=`<div class="card"><table><thead><tr><th>Fichier</th><th>Type</th><th>Stagiaire</th><th>Déposé par</th><th>Taille</th><th>Date</th></tr></thead><tbody>`;
+  html+=d.supports.map(su=>{const f=form(su.formateurId);const ic={'PDF':'#dc2626','Audio':'#7c3aed','Vidéo':'#0284c7'}[su.type]||'#64748b';
+    return `<tr><td><div class="chip"><span class="ava" style="background:${ic};border-radius:8px">${su.type[0]}</span><b>${esc(su.nom)}</b></div></td><td><span class="pill pill-gray">${esc(su.type)}</span></td><td>${stagName(su.stagiaireId)}</td><td>${f?esc(f.nom):'—'}</td><td class="t-sub">${esc(su.taille)}</td><td class="t-sub">${frDate(su.date)}</td></tr>`;}).join('');
+  html+=`</tbody></table></div>`;
+  return html;
+};
+
+/* ---- REPORTING QUALIOPI ---- */
+Views.reporting=function(){
+  const d=DB.data;
+  const actifs=d.stagiaires.filter(s=>s.statut!=='Terminé').length;
+  const termines=d.stagiaires.filter(s=>s.statut==='Terminé').length;
+  const totH=d.stagiaires.reduce((a,s)=>a+s.volumeHeures,0);
+  const realH=d.stagiaires.reduce((a,s)=>a+s.heuresRealisees,0);
+  const seancesReal=d.seances.filter(s=>s.statut==='Réalisée');
+  const signed=seancesReal.filter(s=>s.emargement&&s.emargement.stagiaire).length;
+  const assiduite=seancesReal.length?Math.round(signed/seancesReal.length*100):100;
+  const parLangue={};d.stagiaires.forEach(s=>{parLangue[s.langue]=(parLangue[s.langue]||0)+1;});
+
+  const kpi=(c,l,v,s)=>`<div class="kpi"><div class="lbl">${l}</div><div class="val" style="color:${c}">${v}</div><div class="sub">${s}</div></div>`;
+  let html=`<div class="section-row"><div><h2>Reporting & conformité QUALIOPI</h2><p>Indicateurs d'activité et génération des documents d'audit</p></div></div>`;
+  html+=`<div class="kpis">
+    ${kpi('#4f46e5','Stagiaires actifs',actifs,termines+' terminés')}
+    ${kpi('#0284c7','Heures réalisées',realH+' / '+totH+'h',Math.round(realH/totH*100)+'% du volume')}
+    ${kpi('#16a34a','Taux d\'assiduité',assiduite+'%','preuves horodatées')}
+    ${kpi('#f59e0b','Taux de complétion',Math.round(termines/d.stagiaires.length*100)+'%','formations clôturées')}
+  </div>`;
+
+  html+=`<div class="two-col">
+    <div class="card"><div class="card-h"><h3>Répartition par langue</h3></div><div class="card-b">
+    ${Object.entries(parLangue).map(([l,n])=>{const pct=Math.round(n/d.stagiaires.length*100);return `<div style="margin-bottom:13px"><div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;margin-bottom:5px"><span>${l}</span><span>${n} stagiaire(s)</span></div><div class="progress"><i style="width:${pct}%"></i></div></div>`;}).join('')}
+    </div></div>
+    <div class="card"><div class="card-h"><h3>Documents d'audit</h3></div><div class="card-b">
+      <p class="t-sub" style="margin-bottom:14px">Génération des pièces attendues en audit QUALIOPI.</p>
+      ${[['Feuilles d\'émargement','emargement'],['Attestations de réalisation','attestation'],['Synthèse d\'assiduité','assiduite'],['Registre des stagiaires','registre']].map(([t,k])=>`<button class="btn" style="width:100%;justify-content:space-between;margin-bottom:9px" onclick="Exports.${k}?Exports.${k}():Exports.generic('${esc(t)}')">${t}${svg(I.doc)}</button>`).join('')}
+    </div></div>
+  </div>`;
+
+  // table assiduité par stagiaire
+  html+=`<div class="card" style="margin-top:20px"><div class="card-h"><h3>Assiduité par stagiaire</h3><button class="btn btn-sm" onclick="Exports.assiduite()">Exporter</button></div>
+  <table><thead><tr><th>Stagiaire</th><th>Entreprise</th><th>Formation</th><th>Heures</th><th>Séances émargées</th><th>Assiduité</th><th>Statut</th></tr></thead><tbody>`;
+  html+=d.stagiaires.map(s=>{
+    const ss=d.seances.filter(x=>x.stagiaireId===s.id&&x.statut==='Réalisée');
+    const sg=ss.filter(x=>x.emargement&&x.emargement.stagiaire).length;
+    const a=ss.length?Math.round(sg/ss.length*100):100;
+    return `<tr><td class="t-name">${esc(s.prenom+' '+s.nom)}</td><td>${esc(s.entreprise)}</td><td><span class="pill pill-indigo">${esc(s.langue)}</span></td><td>${s.heuresRealisees}/${s.volumeHeures}h</td><td>${sg}/${ss.length}</td><td><b style="color:${a>=90?'var(--green)':a>=70?'var(--accent)':'var(--red)'}">${a}%</b></td><td>${statutPill(s.statut)}</td></tr>`;
+  }).join('');
+  html+=`</tbody></table></div>`;
+  return html;
+};
+
+/* ============================================================
+   FORMS / MODALS
+   ============================================================ */
+const Forms={};
+
+Forms.stagiaire=function(){
+  const d=DB.data;
+  modal(`<div class="modal wide"><div class="modal-h"><div><h3>Nouveau stagiaire</h3><p>Création d'une fiche apprenant</p></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="modal-b"><div class="grid" style="grid-template-columns:1fr 1fr">
+    <div class="field"><label>Prénom *</label><input class="input" id="fPrenom"></div>
+    <div class="field"><label>Nom *</label><input class="input" id="fNom"></div>
+    <div class="field"><label>Entreprise</label><input class="input" id="fEnt"></div>
+    <div class="field"><label>Email</label><input class="input" id="fEmail"></div>
+    <div class="field"><label>Langue</label><select class="select" id="fLangue">${['Anglais','Allemand','Italien','Espagnol'].map(l=>`<option>${l}</option>`).join('')}</select></div>
+    <div class="field"><label>Profil</label><select class="select" id="fProfil"><option>Technicien</option><option>Cadre</option><option>Dirigeant</option></select></div>
+    <div class="field"><label>Niveau initial</label><select class="select" id="fNivI">${['A1','A2','B1','B2','C1','C2'].map(l=>`<option>${l}</option>`).join('')}</select></div>
+    <div class="field"><label>Niveau visé</label><select class="select" id="fNivV">${['A2','B1','B2','C1','C2'].map(l=>`<option>${l}</option>`).join('')}</select></div>
+    <div class="field"><label>Volume d'heures</label><input class="input" id="fVol" type="number" value="30"></div>
+    <div class="field"><label>Modalité</label><select class="select" id="fMod"><option>Visio</option><option>Présentiel</option></select></div>
+    <div class="field"><label>Formateur assigné</label><select class="select" id="fForm"><option value="">— À assigner —</option>${d.formateurs.map(f=>`<option value="${f.id}">${esc(f.nom)} (${esc(f.langue)})</option>`).join('')}</select></div>
+    <div class="field"><label>Financement</label><select class="select" id="fFin"><option>OPCO</option><option>CPF</option><option>Plan entreprise</option><option>Direct</option></select></div>
+    <div class="field" style="grid-column:1/-1"><label>Objectif principal</label><input class="input" id="fObj" placeholder="Ex : conduite de réunions en anglais"></div>
+  </div></div>
+  <div class="modal-f"><button class="btn" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="Forms.saveStagiaire()">Créer le stagiaire</button></div></div>`);
+};
+Forms.saveStagiaire=function(){
+  const p=val('fPrenom'),n=val('fNom');
+  if(!p||!n){toast('Prénom et nom requis');return;}
+  const vol=parseInt(val('fVol'))||30;
+  DB.data.stagiaires.push({id:uid('s'),prenom:p,nom:n,entreprise:val('fEnt')||'—',email:val('fEmail'),langue:val('fLangue'),niveauInitial:val('fNivI'),niveauVise:val('fNivV'),profil:val('fProfil'),objectif:val('fObj'),formateurId:val('fForm'),volumeHeures:vol,heuresRealisees:0,modalite:val('fMod'),financement:val('fFin'),statut:'À démarrer',autoEval:null});
+  DB.save();closeModal();toast('Stagiaire créé');App.go('stagiaires');
+};
+
+Forms.stagiaireDetail=function(id){
+  const s=stag(id);const f=form(s.formateurId);const d=DB.data;
+  const seances=d.seances.filter(x=>x.stagiaireId===id);
+  const realisees=seances.filter(x=>x.statut==='Réalisée');
+  const supports=d.supports.filter(x=>x.stagiaireId===id);
+  const prog=d.programmes.find(p=>p.stagiaireId===id);
+  const pct=Math.round(s.heuresRealisees/s.volumeHeures*100);
+  modal(`<div class="modal wide"><div class="modal-h"><div style="display:flex;align-items:center;gap:12px"><span class="ava" style="background:${f?f.color:'#888'};width:44px;height:44px;font-size:15px;border-radius:11px">${initials(s.prenom+' '+s.nom)}</span><div><h3>${esc(s.prenom)} ${esc(s.nom)}</h3><p>${esc(s.entreprise)} · ${esc(s.profil)}</p></div></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="modal-b">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px">
+      ${[['Langue',s.langue],['Niveau',s.niveauInitial+' → '+s.niveauVise],['Formateur',f?f.nom:'—'],['Financement',s.financement]].map(([l,v])=>`<div style="background:var(--surface2);border-radius:9px;padding:10px"><div class="t-sub">${l}</div><div style="font-weight:700;font-size:13px;margin-top:2px">${esc(v)}</div></div>`).join('')}
+    </div>
+    <div class="field"><label>Progression — ${s.heuresRealisees}/${s.volumeHeures}h (${pct}%)</label><div class="progress" style="height:9px"><i style="width:${pct}%"></i></div></div>
+    <div style="margin:8px 0 6px"><b style="font-size:13px">Objectif :</b> <span class="t-sub">${esc(s.objectif||'—')}</span></div>
+    ${prog?`<div class="card" style="margin-top:14px"><div class="card-b" style="padding:14px"><b style="font-size:12.5px">Programme : ${esc(prog.titre)}</b><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${prog.modules.map(m=>`<span class="pill pill-indigo">${esc(m)}</span>`).join('')}</div></div></div>`:''}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+      <div><div class="t-sub" style="font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Séances (${seances.length})</div>${seances.length?seances.slice(0,5).map(x=>`<div style="font-size:12px;padding:6px 0;border-bottom:1px solid var(--border)"><b>${frDate(x.date)}</b> ${x.debut} · <span class="pill pill-${x.statut==='Réalisée'?'green':'gray'}" style="font-size:9px">${x.statut}</span></div>`).join(''):'<span class="t-sub">Aucune séance</span>'}</div>
+      <div><div class="t-sub" style="font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Supports (${supports.length})</div>${supports.length?supports.map(x=>`<div style="font-size:12px;padding:6px 0;border-bottom:1px solid var(--border)">${esc(x.nom)}</div>`).join(''):'<span class="t-sub">Aucun support</span>'}</div>
+    </div>
+  </div>
+  <div class="modal-f"><button class="btn" onclick="closeModal()">Fermer</button><button class="btn btn-primary" onclick="closeModal();Forms.seance(null,'${id}')">Planifier une séance</button></div></div>`);
+};
+
+Forms.formateur=function(){
+  modal(`<div class="modal"><div class="modal-h"><div><h3>Ajouter un formateur</h3><p>Membre de l'équipe pédagogique</p></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="modal-b">
+    <div class="field"><label>Nom complet *</label><input class="input" id="gNom" placeholder="Prénom Nom"></div>
+    <div class="field"><label>Langue enseignée</label><select class="select" id="gLangue">${['Anglais','Allemand','Italien','Espagnol','Mandarin','Portugais'].map(l=>`<option>${l}</option>`).join('')}</select></div>
+    <div class="grid" style="grid-template-columns:1fr 1fr">
+      <div class="field"><label>Email</label><input class="input" id="gEmail"></div>
+      <div class="field"><label>Téléphone</label><input class="input" id="gTel"></div>
+    </div>
+    <div class="field"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="gNatif" checked> Formateur natif</label></div>
+  </div>
+  <div class="modal-f"><button class="btn" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="Forms.saveFormateur()">Ajouter</button></div></div>`);
+};
+Forms.saveFormateur=function(){
+  const n=val('gNom');if(!n){toast('Nom requis');return;}
+  const color=COLORS[DB.data.formateurs.length%COLORS.length];
+  DB.data.formateurs.push({id:uid('f'),nom:n,langue:val('gLangue'),email:val('gEmail'),tel:val('gTel'),natif:document.getElementById('gNatif').checked,color});
+  DB.save();closeModal();toast('Formateur ajouté');App.go('formateurs');
+};
+
+Forms.seance=function(presetDate,presetStag){
+  const d=DB.data;
+  modal(`<div class="modal"><div class="modal-h"><div><h3>Planifier une séance</h3><p>Assignation d'une intervention au calendrier</p></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="modal-b">
+    <div class="field"><label>Stagiaire *</label><select class="select" id="seStag" onchange="Forms._seAutoForm()">${d.stagiaires.map(s=>`<option value="${s.id}" ${presetStag===s.id?'selected':''}>${esc(s.prenom+' '+s.nom)} — ${esc(s.entreprise)} (${esc(s.langue)})</option>`).join('')}</select></div>
+    <div class="field"><label>Formateur *</label><select class="select" id="seForm">${d.formateurs.map(f=>`<option value="${f.id}">${esc(f.nom)} (${esc(f.langue)})</option>`).join('')}</select><div class="hint" id="seConflict"></div></div>
+    <div class="grid" style="grid-template-columns:1.2fr 1fr 1fr">
+      <div class="field"><label>Date *</label><input class="input" type="date" id="seDate" value="${presetDate||fmtD(new Date())}"></div>
+      <div class="field"><label>Début</label><input class="input" type="time" id="seDebut" value="09:00"></div>
+      <div class="field"><label>Fin</label><input class="input" type="time" id="seFin" value="10:30"></div>
+    </div>
+    <div class="field"><label>Modalité</label><select class="select" id="seMod"><option>Visio</option><option>Présentiel</option></select></div>
+  </div>
+  <div class="modal-f"><button class="btn" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="Forms.saveSeance()">Planifier</button></div></div>`);
+  Forms._seAutoForm();
+};
+Forms._seAutoForm=function(){
+  const sid=val('seStag');const s=stag(sid);if(s&&s.formateurId){const sel=document.getElementById('seForm');if(sel)sel.value=s.formateurId;}
+};
+Forms.saveSeance=function(){
+  const sid=val('seStag'),fid=val('seForm'),date=val('seDate'),deb=val('seDebut'),fin=val('seFin');
+  if(!sid||!fid||!date){toast('Champs requis manquants');return;}
+  // conflict check
+  const conflict=DB.data.seances.find(s=>s.formateurId===fid&&s.date===date&&!(fin<=s.debut||deb>=s.fin));
+  if(conflict){if(!confirm('⚠ Conflit d\'horaire détecté pour ce formateur ('+conflict.debut+'–'+conflict.fin+'). Planifier quand même ?'))return;}
+  DB.data.seances.push({id:uid('se'),stagiaireId:sid,formateurId:fid,date,debut:deb,fin,modalite:val('seMod'),statut:'Planifiée',emargement:null,suivi:null});
+  DB.save();closeModal();toast('Séance planifiée');App.go('calendar');
+};
+
+Forms.seanceDetail=function(id){
+  const s=DB.data.seances.find(x=>x.id===id);const f=form(s.formateurId);
+  modal(`<div class="modal"><div class="modal-h"><div><h3>${stagName(s.stagiaireId)}</h3><p>${frDate(s.date)} · ${s.debut}–${s.fin}</p></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="modal-b">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
+      ${[['Formateur',f.nom],['Modalité',s.modalite],['Statut',s.statut],['Langue',stag(s.stagiaireId)?stag(s.stagiaireId).langue:'—']].map(([l,v])=>`<div style="background:var(--surface2);border-radius:9px;padding:10px"><div class="t-sub">${l}</div><div style="font-weight:700;margin-top:2px">${esc(v)}</div></div>`).join('')}
+    </div>
+    ${s.emargement&&s.emargement.stagiaire?`<div class="sig-done" style="margin-top:8px">${svg(I.check)}Séance émargée et horodatée</div>`:''}
+    ${s.suivi?`<div class="card" style="margin-top:12px"><div class="card-b" style="padding:13px"><b style="font-size:12px">Suivi de séance</b><div class="t-sub" style="margin-top:6px">${esc(s.suivi.objectifs)} · ${stars(s.suivi.progression)}</div></div></div>`:''}
+  </div>
+  <div class="modal-f">
+    <button class="btn" onclick="Forms.delSeance('${id}')" style="color:var(--red)">Supprimer</button>
+    <div style="flex:1"></div>
+    ${s.statut==='Planifiée'?`<button class="btn btn-primary" onclick="closeModal();Forms.emarge('${id}')">Démarrer / Émarger</button>`:`<button class="btn btn-primary" onclick="closeModal();Forms.suivi('${id}')">Compléter le suivi</button>`}
+  </div></div>`);
+};
+Forms.delSeance=function(id){if(!confirm('Supprimer cette séance ?'))return;DB.data.seances=DB.data.seances.filter(s=>s.id!==id);DB.save();closeModal();toast('Séance supprimée');App.go(App.page);};
+
+/* ---- ÉMARGEMENT (signature pad) ---- */
+Forms.emarge=function(id){
+  const s=DB.data.seances.find(x=>x.id===id);const f=form(s.formateurId);
+  modal(`<div class="modal"><div class="modal-h"><div><h3>Émargement électronique</h3><p>${stagName(s.stagiaireId)} · ${frDate(s.date)} · ${s.debut}–${s.fin}</p></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="modal-b">
+    <div class="field"><label>Signature du stagiaire — ${esc(stagName(s.stagiaireId))}</label><canvas class="sigpad" id="sig1" height="120"></canvas><button class="btn btn-sm btn-ghost" style="margin-top:6px" onclick="Sig.clear('sig1')">Effacer</button></div>
+    <div class="field"><label>Signature du formateur — ${esc(f.nom)}</label><canvas class="sigpad" id="sig2" height="120"></canvas><button class="btn btn-sm btn-ghost" style="margin-top:6px" onclick="Sig.clear('sig2')">Effacer</button></div>
+    <p class="t-sub" style="margin-top:4px">${svg(I.clock)} Horodatage automatique à la validation — archivage conforme QUALIOPI.</p>
+  </div>
+  <div class="modal-f"><button class="btn" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="Forms.saveEmarge('${id}')">Valider l'émargement</button></div></div>`);
+  setTimeout(()=>{Sig.init('sig1');Sig.init('sig2');},30);
+};
+Forms.saveEmarge=function(id){
+  if(!Sig.has('sig1')||!Sig.has('sig2')){toast('Les deux signatures sont requises');return;}
+  const s=DB.data.seances.find(x=>x.id===id);
+  s.emargement={stagiaire:Sig.get('sig1'),formateur:Sig.get('sig2'),ts:new Date().toISOString()};
+  s.statut='Réalisée';
+  const st=stag(s.stagiaireId);
+  if(st){const dur=2;st.heuresRealisees=Math.min(st.volumeHeures,st.heuresRealisees+1.5);if(st.statut==='À démarrer')st.statut='En cours';if(st.heuresRealisees>=st.volumeHeures)st.statut='Terminé';}
+  DB.save();closeModal();toast('Émargement validé et horodaté');App.go(App.page);
+};
+Forms.emargeView=function(id){
+  const s=DB.data.seances.find(x=>x.id===id);const f=form(s.formateurId);
+  const ts=s.emargement&&s.emargement.ts?new Date(s.emargement.ts).toLocaleString('fr-FR'):'—';
+  modal(`<div class="modal"><div class="modal-h"><div><h3>Feuille d'émargement</h3><p>${stagName(s.stagiaireId)} · ${frDate(s.date)}</p></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="modal-b">
+    <table><tbody>
+    <tr><th style="width:40%">Stagiaire</th><td>${esc(stagName(s.stagiaireId))}</td></tr>
+    <tr><th>Formateur</th><td>${esc(f.nom)}</td></tr>
+    <tr><th>Créneau</th><td>${s.debut} – ${s.fin} (${s.modalite})</td></tr>
+    <tr><th>Horodatage</th><td>${ts}</td></tr>
+    </tbody></table>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px">
+      <div><div class="t-sub">Signature stagiaire</div>${sigImg(s.emargement&&s.emargement.stagiaire)}</div>
+      <div><div class="t-sub">Signature formateur</div>${sigImg(s.emargement&&s.emargement.formateur)}</div>
+    </div>
+  </div>
+  <div class="modal-f"><button class="btn btn-primary" onclick="closeModal()">Fermer</button></div></div>`);
+};
+function sigImg(data){if(data&&data.startsWith&&data.startsWith('data:'))return `<img src="${data}" style="border:1px solid var(--border);border-radius:8px;width:100%;height:90px;object-fit:contain;background:#fff;margin-top:5px">`;return `<div class="sig-done" style="margin-top:5px;height:90px;justify-content:center">${svg(I.check)}Signé</div>`;}
+
+/* ---- SUIVI ---- */
+Forms.suivi=function(id){
+  const s=DB.data.seances.find(x=>x.id===id);const sv=s.suivi||{objectifs:'',ressources:'',progression:3,commentaires:''};
+  modal(`<div class="modal"><div class="modal-h"><div><h3>Cahier d'animation</h3><p>${stagName(s.stagiaireId)} · ${frDate(s.date)} · ${s.debut}</p></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="modal-b">
+    <div class="field"><label>Objectifs travaillés</label><input class="input" id="svObj" value="${esc(sv.objectifs)}" placeholder="Ex : conduite de réunion, vocabulaire technique"></div>
+    <div class="field"><label>Ressources utilisées</label><input class="input" id="svRes" value="${esc(sv.ressources)}" placeholder="Ex : support PDF, audio, jeu de rôle"></div>
+    <div class="field"><label>Progression observée</label><div id="svStars" style="font-size:26px;cursor:pointer">${[1,2,3,4,5].map(i=>`<span onclick="Forms._setStar(${i})" data-i="${i}" style="color:${i<=sv.progression?'var(--accent)':'var(--border-dark)'}">★</span>`).join('')}</div></div>
+    <div class="field"><label>Commentaires</label><textarea class="input" id="svCom" rows="3" placeholder="Observations, points à consolider…">${esc(sv.commentaires)}</textarea></div>
+  </div>
+  <div class="modal-f"><button class="btn" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="Forms.saveSuivi('${id}')">Enregistrer</button></div></div>`);
+  Forms._star=sv.progression;
+};
+Forms._setStar=function(n){Forms._star=n;document.querySelectorAll('#svStars span').forEach(sp=>{sp.style.color=parseInt(sp.dataset.i)<=n?'var(--accent)':'var(--border-dark)';});};
+Forms.saveSuivi=function(id){
+  const s=DB.data.seances.find(x=>x.id===id);
+  s.suivi={objectifs:val('svObj'),ressources:val('svRes'),progression:Forms._star||3,commentaires:val('svCom')};
+  if(s.statut!=='Réalisée')s.statut='Réalisée';
+  DB.save();closeModal();toast('Suivi enregistré');App.go(App.page);
+};
+
+/* ---- AUTO-EVAL & PROGRAMME ---- */
+Forms.autoEval=function(){
+  const d=DB.data;
+  modal(`<div class="modal"><div class="modal-h"><div><h3>Auto-évaluation stagiaire</h3><p>Formulaire de positionnement initial</p></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="modal-b">
+    <div class="field"><label>Stagiaire</label><select class="select" id="aeStag">${d.stagiaires.map(s=>`<option value="${s.id}">${esc(s.prenom+' '+s.nom)} (${esc(s.langue)})</option>`).join('')}</select></div>
+    <div class="field"><label>Niveau perçu (CECR)</label><select class="select" id="aeNiv">${['A1','A2','B1','B2','C1','C2'].map(l=>`<option>${l}</option>`).join('')}</select></div>
+    <div class="field"><label>Confiance à l'oral (1-5)</label><select class="select" id="aeConf">${[1,2,3,4,5].map(n=>`<option value="${n}">${'★'.repeat(n)}</option>`).join('')}</select></div>
+    <div class="field"><label>Besoin principal</label><input class="input" id="aeBes" placeholder="Ex : réunions, négociation, e-mails"></div>
+    <div class="field"><label>Disponibilités</label><input class="input" id="aeDispo" placeholder="Ex : mardi & jeudi matin"></div>
+  </div>
+  <div class="modal-f"><button class="btn" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="Forms.saveAutoEval()">Enregistrer</button></div></div>`);
+};
+Forms.saveAutoEval=function(){
+  const s=stag(val('aeStag'));if(!s)return;
+  s.autoEval={niveau:val('aeNiv'),confiance:parseInt(val('aeConf')),besoins:val('aeBes'),dispo:val('aeDispo'),date:fmtD(new Date())};
+  DB.save();closeModal();toast('Auto-évaluation enregistrée');App.go('programmes');setTimeout(()=>{const t=document.querySelectorAll('.tab')[1];if(t)Views._progTab('eval',t);},50);
+};
+Forms.genProg=function(id){
+  const s=stag(id);if(!s||!s.autoEval)return;
+  const byProfil={Technicien:['Vocabulaire métier','Consignes & sécurité','Procédures techniques','Rédaction e-mails'],Cadre:['Communication professionnelle','Conduite de réunion','Négociation','Interculturel'],Dirigeant:['Prise de parole','Représentation','Contextes stratégiques','Médias & présentations']};
+  const mods=byProfil[s.profil]||byProfil.Cadre;
+  modal(`<div class="modal"><div class="modal-h"><div><h3>Générer le programme</h3><p>Pré-rempli depuis l'auto-évaluation de ${esc(s.prenom+' '+s.nom)}</p></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="modal-b">
+    <div class="field"><label>Titre du programme</label><input class="input" id="pgTitre" value="${esc(s.langue)} ${esc(s.profil.toLowerCase())} — ${esc(s.autoEval.besoins||s.objectif||'parcours personnalisé')}"></div>
+    <div class="field"><label>Durée (heures)</label><input class="input" type="number" id="pgDuree" value="${s.volumeHeures}"></div>
+    <div class="field"><label>Modèle (profil)</label><select class="select" id="pgModele"><option ${s.profil==='Technicien'?'selected':''}>Technicien</option><option ${s.profil==='Cadre'?'selected':''}>Cadre</option><option ${s.profil==='Dirigeant'?'selected':''}>Dirigeant</option></select></div>
+    <div class="field"><label>Modules (un par ligne)</label><textarea class="input" id="pgMods" rows="5">${mods.join('\n')}</textarea><div class="hint">Suggérés selon le profil « ${esc(s.profil)} » et le niveau ${esc(s.autoEval.niveau)}.</div></div>
+  </div>
+  <div class="modal-f"><button class="btn" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="Forms.saveProg('${id}')">Créer le programme</button></div></div>`);
+};
+Forms.programme=function(){
+  const d=DB.data;
+  modal(`<div class="modal"><div class="modal-h"><div><h3>Nouveau programme</h3><p>Programme de formation personnalisé</p></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="modal-b">
+    <div class="field"><label>Stagiaire</label><select class="select" id="pgStag">${d.stagiaires.map(s=>`<option value="${s.id}">${esc(s.prenom+' '+s.nom)} (${esc(s.langue)})</option>`).join('')}</select></div>
+    <div class="field"><label>Titre</label><input class="input" id="pgTitre" placeholder="Ex : Anglais professionnel — Réunions"></div>
+    <div class="field"><label>Durée (heures)</label><input class="input" type="number" id="pgDuree" value="30"></div>
+    <div class="field"><label>Modèle (profil)</label><select class="select" id="pgModele"><option>Technicien</option><option>Cadre</option><option>Dirigeant</option></select></div>
+    <div class="field"><label>Modules (un par ligne)</label><textarea class="input" id="pgMods" rows="5">Vocabulaire métier\nConduite de réunion\nNégociation\nÉvaluation finale</textarea></div>
+  </div>
+  <div class="modal-f"><button class="btn" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="Forms.saveProg()">Créer</button></div></div>`);
+};
+Forms.saveProg=function(presetStag){
+  const sid=presetStag||val('pgStag');
+  const titre=val('pgTitre');if(!titre){toast('Titre requis');return;}
+  const mods=val('pgMods').split('\n').map(x=>x.trim()).filter(Boolean);
+  DB.data.programmes.push({id:uid('p'),stagiaireId:sid,titre,duree:parseInt(val('pgDuree'))||30,modules:mods,modele:val('pgModele')});
+  DB.save();closeModal();toast('Programme créé');App.go('programmes');
+};
+
+/* ---- SUPPORT ---- */
+Forms.support=function(){
+  const d=DB.data;
+  modal(`<div class="modal"><div class="modal-h"><div><h3>Déposer un support</h3><p>Ressource pédagogique rattachée à un stagiaire</p></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="modal-b">
+    <div class="field"><label>Stagiaire</label><select class="select" id="suStag">${d.stagiaires.map(s=>`<option value="${s.id}">${esc(s.prenom+' '+s.nom)}</option>`).join('')}</select></div>
+    <div class="field"><label>Nom du fichier</label><input class="input" id="suNom" placeholder="Ex : Business English Unit 4.pdf"></div>
+    <div class="field"><label>Type</label><select class="select" id="suType"><option>PDF</option><option>Audio</option><option>Vidéo</option></select></div>
+    <div class="field"><label>Formateur</label><select class="select" id="suForm">${d.formateurs.map(f=>`<option value="${f.id}">${esc(f.nom)}</option>`).join('')}</select></div>
+    <p class="t-sub">Prototype : l'upload réel de fichier sera branché sur le stockage chiffré (RGPD).</p>
+  </div>
+  <div class="modal-f"><button class="btn" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="Forms.saveSupport()">Déposer</button></div></div>`);
+};
+Forms.saveSupport=function(){
+  const nom=val('suNom');if(!nom){toast('Nom de fichier requis');return;}
+  DB.data.supports.push({id:uid('sup'),stagiaireId:val('suStag'),nom,type:val('suType'),taille:(Math.random()*3+0.5).toFixed(1)+' Mo',date:fmtD(new Date()),formateurId:val('suForm')});
+  DB.save();closeModal();toast('Support déposé');App.go('supports');
+};
+
+/* ---- DOSSIER (process) ---- */
+Forms.dossier=function(){
+  const d=DB.data;
+  modal(`<div class="modal"><div class="modal-h"><div><h3>Nouveau dossier de formation</h3><p>Entrée dans le processus à l'étape 1</p></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="modal-b">
+    <div class="field"><label>Client / entreprise *</label><input class="input" id="doClient" placeholder="Ex : Daimler Truck"></div>
+    <div class="field"><label>Stagiaire associé (optionnel)</label><select class="select" id="doStag"><option value="">— Prospect, pas encore de stagiaire —</option>${d.stagiaires.map(s=>`<option value="${s.id}">${esc(s.prenom+' '+s.nom)}</option>`).join('')}</select></div>
+    <div class="field"><label>Montant estimé (€)</label><input class="input" type="number" id="doMontant" value="0"></div>
+    <div class="field"><label>Notes</label><textarea class="input" id="doNotes" rows="2" placeholder="Origine de la demande, contexte…"></textarea></div>
+  </div>
+  <div class="modal-f"><button class="btn" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="Forms.saveDossier()">Créer le dossier</button></div></div>`);
+};
+Forms.saveDossier=function(){
+  const client=val('doClient');if(!client){toast('Client requis');return;}
+  DB.data.dossiers.push({id:uid('d'),stagiaireId:val('doStag')||null,client,etape:1,montant:parseInt(val('doMontant'))||0,date:fmtD(new Date()),notes:val('doNotes')});
+  DB.save();closeModal();toast('Dossier créé à l\'étape 1');App.go('process');
+};
+Forms.dossierDetail=function(id){
+  const x=DB.data.dossiers.find(d=>d.id===id);const s=x.stagiaireId?stag(x.stagiaireId):null;const st=STEPS.find(z=>z.n===x.etape);
+  modal(`<div class="modal"><div class="modal-h"><div><h3>${esc(x.client)}</h3><p>${s?esc(s.prenom+' '+s.nom+' · '+s.langue):'Prospect'} · créé le ${frDate(x.date)}</p></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="modal-b">
+    <div class="field"><label>Étape actuelle</label>
+      <div style="display:flex;flex-direction:column;gap:6px">
+      ${STEPS.map(z=>`<div onclick="Forms._setEtape('${id}',${z.n})" style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;cursor:pointer;border:1px solid ${z.n===x.etape?'var(--primary)':'var(--border)'};background:${z.n===x.etape?'var(--primary-soft)':'var(--surface)'}">
+        <span style="width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;background:${z.n<x.etape?'var(--green)':z.n===x.etape?'var(--primary)':'var(--border)'};color:${z.n<=x.etape?'#fff':'var(--muted)'}">${z.n<x.etape?'✓':z.n}</span>
+        <div><div style="font-weight:700;font-size:12.5px">${z.t}</div><div class="t-sub">${z.c}</div></div></div>`).join('')}
+      </div>
+    </div>
+    <div class="field"><label>Montant (€)</label><input class="input" type="number" id="doM2" value="${x.montant}"></div>
+    <div class="field"><label>Notes</label><textarea class="input" id="doN2" rows="2">${esc(x.notes||'')}</textarea></div>
+  </div>
+  <div class="modal-f"><button class="btn" onclick="Forms.delDossier('${id}')" style="color:var(--red)">Supprimer</button><div style="flex:1"></div><button class="btn btn-primary" onclick="Forms.saveDossierEdit('${id}')">Enregistrer</button></div></div>`);
+};
+Forms._setEtape=function(id,n){const x=DB.data.dossiers.find(d=>d.id===id);x.etape=n;DB.save();Forms.dossierDetail(id);};
+Forms.saveDossierEdit=function(id){const x=DB.data.dossiers.find(d=>d.id===id);x.montant=parseInt(val('doM2'))||0;x.notes=val('doN2');DB.save();closeModal();toast('Dossier mis à jour');App.go('process');};
+Forms.delDossier=function(id){if(!confirm('Supprimer ce dossier ?'))return;DB.data.dossiers=DB.data.dossiers.filter(d=>d.id!==id);DB.save();closeModal();toast('Dossier supprimé');App.go('process');};
+
+/* ---- SIGNATURE PAD ---- */
+const Sig={
+  pads:{},
+  init(cid){const c=document.getElementById(cid);if(!c)return;c.width=c.offsetWidth;const ctx=c.getContext('2d');ctx.lineWidth=2.2;ctx.lineCap='round';ctx.strokeStyle='#1e1b4b';
+    let drawing=false,used=false;
+    const pos=e=>{const r=c.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top};};
+    const down=e=>{drawing=true;used=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);e.preventDefault();};
+    const move=e=>{if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();e.preventDefault();};
+    const up=()=>{drawing=false;};
+    c.onmousedown=down;c.onmousemove=move;window.addEventListener('mouseup',up);
+    c.ontouchstart=down;c.ontouchmove=move;c.ontouchend=up;
+    this.pads[cid]={c,get used(){return used;},reset(){used=false;}};
+  },
+  clear(cid){const p=this.pads[cid];if(!p)return;const ctx=p.c.getContext('2d');ctx.clearRect(0,0,p.c.width,p.c.height);p.reset();},
+  has(cid){const p=this.pads[cid];return p&&p.used;},
+  get(cid){const p=this.pads[cid];return p?p.c.toDataURL('image/png'):null;}
+};
+
+/* ---- EXPORTS ---- */
+const Exports={
+  download(name,content,type){const blob=new Blob([content],{type:type||'text/csv;charset=utf-8;'});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);toast('Export généré : '+name);},
+  csv(rows){return rows.map(r=>r.map(c=>`"${String(c==null?'':c).replace(/"/g,'""')}"`).join(';')).join('\n');},
+  emargement(){
+    const rows=[['Date','Début','Fin','Stagiaire','Entreprise','Formateur','Modalité','Émargé','Horodatage']];
+    DB.data.seances.filter(s=>s.statut==='Réalisée').sort((a,b)=>a.date.localeCompare(b.date)).forEach(s=>{const st=stag(s.stagiaireId),f=form(s.formateurId);rows.push([s.date,s.debut,s.fin,stagName(s.stagiaireId),st?st.entreprise:'',f.nom,s.modalite,s.emargement&&s.emargement.stagiaire?'Oui':'Non',s.emargement?new Date(s.emargement.ts).toLocaleString('fr-FR'):'']);});
+    this.download('emargement_aslearning.csv',this.csv(rows));
+  },
+  assiduite(){
+    const rows=[['Stagiaire','Entreprise','Langue','Heures réalisées','Volume','Séances émargées','Assiduité %','Statut']];
+    DB.data.stagiaires.forEach(s=>{const ss=DB.data.seances.filter(x=>x.stagiaireId===s.id&&x.statut==='Réalisée');const sg=ss.filter(x=>x.emargement&&x.emargement.stagiaire).length;const a=ss.length?Math.round(sg/ss.length*100):100;rows.push([s.prenom+' '+s.nom,s.entreprise,s.langue,s.heuresRealisees,s.volumeHeures,sg+'/'+ss.length,a,s.statut]);});
+    this.download('assiduite_aslearning.csv',this.csv(rows));
+  },
+  registre(){
+    const rows=[['Prénom','Nom','Entreprise','Langue','Niveau initial','Niveau visé','Profil','Formateur','Volume h','Financement','Statut']];
+    DB.data.stagiaires.forEach(s=>{const f=form(s.formateurId);rows.push([s.prenom,s.nom,s.entreprise,s.langue,s.niveauInitial,s.niveauVise,s.profil,f?f.nom:'',s.volumeHeures,s.financement,s.statut]);});
+    this.download('registre_stagiaires.csv',this.csv(rows));
+  },
+  attestation(){
+    const termines=DB.data.stagiaires.filter(s=>s.statut==='Terminé');
+    if(!termines.length){toast('Aucune formation clôturée');return;}
+    const rows=[['Stagiaire','Entreprise','Formation','Heures réalisées','Attestation']];
+    termines.forEach(s=>rows.push([s.prenom+' '+s.nom,s.entreprise,s.langue+' '+s.profil,s.heuresRealisees+'h','Certificat de réalisation']));
+    this.download('attestations_realisation.csv',this.csv(rows));
+  },
+  generic(t){toast(t+' — généré (démo)');}
+};
+
+/* ---- BOOT ---- */
+App.start();
+</script>
+</body>
+</html>
