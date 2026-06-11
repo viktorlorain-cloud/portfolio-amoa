@@ -22,6 +22,7 @@ App.views = App.views || {};
     { key: "programmes", label: "Programmes", icon: "📋", roles: ["admin", "formateur", "stagiaire"] },
     { key: "autoeval", label: "Auto-évaluations", icon: "📝", roles: ["admin", "formateur", "stagiaire"] },
     { key: "supports", label: "Supports", icon: "📎", roles: ["admin", "formateur", "stagiaire"] },
+    { key: "drive", label: "Drive", icon: "🗂", roles: ["admin", "formateur", "stagiaire"] },
     { key: "reporting", label: "Reporting QUALIOPI", icon: "📊", roles: ["admin"] },
     { key: "journal", label: "Journal d'activité", icon: "🕘", roles: ["admin"] },
   ];

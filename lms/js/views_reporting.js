@@ -215,6 +215,19 @@ App.docs = App.docs || {};
           <tr><th>Niveau initial → visé</th><td>${s.niveauInitial} → ${s.niveauVise}</td></tr>
         </table>
         <div class="sign-grid"><div class="sign-box"><div class="line">Pour AS Learning — ${U.fmtDate(U.todayISO())}</div></div></div>`;
+    } else if (type === "autoeval") {
+      const a = store.where("autoEvaluations", (x) => x.stagiaireId === s.id)[0];
+      title = "Fiche d'auto-évaluation";
+      const comps = [["comprehensionOrale", "Compréhension orale"], ["expressionOrale", "Expression orale"], ["comprehensionEcrite", "Compréhension écrite"], ["expressionEcrite", "Expression écrite"]];
+      const rep = (a && a.reponses) || {};
+      body = `${docHead}<h1>Fiche d'auto-évaluation</h1>
+        <p><b>Stagiaire :</b> ${U.escapeHtml(s.nom)} — <b>Langue :</b> ${U.escapeHtml(s.langue)}${a ? " — <b>Date :</b> " + U.fmtDate(a.date) : ""}</p>
+        ${a ? `<table><tr><th>Compétence</th><th>Niveau auto-évalué (/5)</th></tr>
+          ${comps.map((c) => `<tr><td>${c[1]}</td><td>${rep[c[0]] || "—"}</td></tr>`).join("")}
+          <tr><th>Niveau global perçu (CECRL)</th><td>${a.niveauPercu || "—"}</td></tr>
+          <tr><th>Fréquence d'utilisation</th><td>${U.escapeHtml(rep.frequenceUsage || "—")}</td></tr></table>
+          <p><b>Besoins :</b> ${U.escapeHtml(a.besoins || "—")}</p>
+          <p><b>Objectifs :</b> ${U.escapeHtml(a.objectifs || "—")}</p>` : "<p>Auto-évaluation non encore renseignée.</p>"}`;
     } else { ui.toast("Type de document inconnu.", "error"); return; }
 
     U.printDocument(title + " — " + s.nom, body);
