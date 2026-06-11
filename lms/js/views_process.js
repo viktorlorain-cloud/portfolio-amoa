@@ -284,15 +284,68 @@ App.views = App.views || {};
       { label: "", render: (r) => `<button class="btn btn--ghost btn--sm" data-ae="${r.s.id}">${r.ae ? "Consulter" : "Remplir"}</button>` },
     ], rows, { empty: "Aucun stagiaire." });
 
+    const remplies = rows.filter((r) => r.ae).length;
+    const actions = isStagiaire ? "" :
+      `<button class="btn btn--ghost" id="ae-csv">⬇ Exporter (Excel/CSV)</button>
+       <button class="btn btn--ghost" id="ae-pdf">📄 Récapitulatif (PDF)</button>`;
+
     return {
       title: "Auto-évaluations",
-      subtitle: isStagiaire ? "Évaluez votre niveau et vos besoins" : "Base de construction des programmes",
+      subtitle: isStagiaire ? "Évaluez votre niveau et vos besoins" : `Base de construction des programmes — ${remplies}/${rows.length} fiche(s) remplie(s)`,
+      actions,
       html: table,
       onMount(root) {
         root.querySelectorAll("[data-ae]").forEach((b) => b.onclick = () => autoEvalModal(b.getAttribute("data-ae")));
+        const csv = document.getElementById("ae-csv");
+        if (csv) csv.onclick = () => exportAutoEvalsCSV(rows);
+        const pdf = document.getElementById("ae-pdf");
+        if (pdf) pdf.onclick = () => autoEvalsRecapPDF(rows);
       },
     };
   };
+
+  // Libellés des compétences notées dans l'auto-évaluation
+  const AE_COMPETENCES = [
+    ["comprehensionOrale", "Compréhension orale"], ["expressionOrale", "Expression orale"],
+    ["comprehensionEcrite", "Compréhension écrite"], ["expressionEcrite", "Expression écrite"],
+  ];
+
+  // Export tableur (CSV/Excel) de toutes les fiches d'auto-évaluation
+  function exportAutoEvalsCSV(rows) {
+    const header = ["Stagiaire", "Langue", "Profil", "Date", "Niveau perçu",
+      ...AE_COMPETENCES.map((c) => c[1] + " (/5)"), "Fréquence d'usage", "Besoins", "Objectifs", "Statut"];
+    const data = [header];
+    rows.forEach(({ s, ae }) => {
+      const rep = (ae && ae.reponses) || {};
+      data.push([
+        s.nom, s.langue, s.profil, ae ? U.fmtDateShort(ae.date) : "", ae ? ae.niveauPercu : "",
+        ...AE_COMPETENCES.map((c) => (ae ? (rep[c[0]] || "") : "")),
+        ae ? (rep.frequenceUsage || "") : "", ae ? ae.besoins : "", ae ? ae.objectifs : "",
+        ae ? "Remplie" : "Non remplie",
+      ]);
+    });
+    U.exportCSV("auto_evaluations_aslearning.csv", data);
+    store.log("Export auto-évaluations", `${rows.filter((r) => r.ae).length} fiche(s)`);
+    ui.toast("Récapitulatif exporté (CSV/Excel).");
+  }
+
+  // Récapitulatif PDF de toutes les fiches d'auto-évaluation (archivage / audit)
+  function autoEvalsRecapPDF(rows) {
+    const remplies = rows.filter((r) => r.ae);
+    const head = `<div class="doc-head"><div><span class="brand">AS Learning</span><div class="muted">Organisme de formation — QUALIOPI</div></div><div class="muted">Édité le ${U.fmtDate(U.todayISO())}</div></div>`;
+    const synthese = `<h1>Récapitulatif des auto-évaluations</h1>
+      <p>${remplies.length} fiche(s) remplie(s) sur ${rows.length} stagiaire(s).</p>
+      <table><tr><th>Stagiaire</th><th>Langue</th><th>Niveau perçu</th>${AE_COMPETENCES.map((c) => `<th>${c[1]}</th>`).join("")}<th>Date</th></tr>
+        ${rows.map(({ s, ae }) => { const rep = (ae && ae.reponses) || {}; return `<tr><td>${U.escapeHtml(s.nom)}</td><td>${s.langue}</td><td>${ae ? ae.niveauPercu : "—"}</td>${AE_COMPETENCES.map((c) => `<td>${ae ? (rep[c[0]] || "—") : "—"}</td>`).join("")}<td>${ae ? U.fmtDateShort(ae.date) : "non remplie"}</td></tr>`; }).join("")}
+      </table>`;
+    const details = remplies.map(({ s, ae }) => `
+      <h2>${U.escapeHtml(s.nom)} — ${s.langue}</h2>
+      <p><b>Niveau perçu :</b> ${ae.niveauPercu} · <b>Fréquence d'usage :</b> ${U.escapeHtml((ae.reponses && ae.reponses.frequenceUsage) || "—")} · <b>Date :</b> ${U.fmtDate(ae.date)}</p>
+      <p><b>Besoins :</b> ${U.escapeHtml(ae.besoins || "—")}</p>
+      <p><b>Objectifs :</b> ${U.escapeHtml(ae.objectifs || "—")}</p>`).join("");
+    U.printDocument("Récapitulatif des auto-évaluations — AS Learning", head + synthese + details);
+    store.log("Récapitulatif auto-évaluations (PDF)", `${remplies.length} fiche(s)`);
+  }
 
   function autoEvalModal(stagiaireId) {
     const s = stagiaire(stagiaireId);
